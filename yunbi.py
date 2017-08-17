@@ -5,9 +5,7 @@ from bs4 import BeautifulSoup
 from pymongo import MongoClient
 from config import Config
 import urllib2
-import json
 import time
-import copy
 
 class YunbiSpider:
     def __init__(self, config):
@@ -27,7 +25,7 @@ class YunbiSpider:
 
     def readDB(self):
         conn = MongoClient(self.config.dbAddress, self.config.dbPort)
-        db = conn.coin_info
+        db = conn.coin_message
         return db.yunbi
 
     def getArticlesInJson(self, limit=10):
@@ -67,10 +65,12 @@ class YunbiSpider:
                 oldArticles.insert(articleInfo)
                 count += 1
 
-        def update(self):
-            self.updateDB(self.config.yunbiSystem)
-            self.updateDB(self.config.yunbiBusiness)
+
+    def update(self):
+        self.updateDB(self.config.yunbiSystem)
+        self.updateDB(self.config.yunbiBusiness)
 
 if __name__ == "__main__":
-    spider = YunbiSpider()
-    print spider.getArticlesInJson(2)
+    config = Config()
+    spider = YunbiSpider(config)
+    spider.update()

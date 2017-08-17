@@ -3,6 +3,7 @@
 
 from flask import Flask
 from flask.ext import restful
+from flask.ext.restful import reqparse
 from yunbi import YunbiSpider
 from config import Config
 
@@ -17,21 +18,31 @@ def output_json(data, code, headers=None):
     resp.headers.extend(headers or {})
     return resp
 
-config = Config()
-spiders = [YunbiSpider(config)]
-
 class Announcement(restful.Resource):
-    def get(self, identity):
+    config = Config()
+    spiders = [YunbiSpider(config)]
+
+    def parserRequest(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument('identity', type=int)
+        parser.add_argument('number', type=int)
+        return parser.parse_args()
+
+    def get(self):
+        args = self.parserRequest()
+        identity = args['identity']
+        number = args['number']
+
         result = []
         idx = 0
         while identity:
             if (identity& 1):
-                result.extend(spiders[idx].getArticlesInJson(1))
+                result.extend(self.spiders[idx].getArticlesInJson(number))
             idx += 1
             identity = identity >> 1
         return {"posts":result}
 
-api.add_resource(Announcement, '/<int:identity>')
+api.add_resource(Announcement, '/api/getNews')
 
 if __name__ == '__main__':
     app.run(debug=True)

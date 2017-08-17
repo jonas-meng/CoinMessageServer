@@ -14,9 +14,10 @@ api = restful.Api(app)
 
 @api.representation('application/json')
 def output_json(data, code, headers=None):
-    resp = app.make_response(json.dumps(data, ensure_ascii=False))
-    resp.headers.extend(headers or {})
-    return resp
+    response = app.make_response(json.dumps(data, ensure_ascii=False))
+    response.headers.extend(headers or {})
+    response.headers.set('Access-Control-Allow-Origin', '*')
+    return response
 
 class Announcement(restful.Resource):
     config = Config()

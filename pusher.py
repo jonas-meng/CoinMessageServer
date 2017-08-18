@@ -28,8 +28,7 @@ class NewsPusher:
                 continue
 
             pusher = _jpush.create_push()
-            #pusher.audience = jpush.audience(jpush.tag(self.config.website[article['code']]['jpush_code']))
-            pusher.audience = jpush.audience(jpush.tag('d'))
+            pusher.audience = jpush.audience(jpush.tag(self.config.website[article['code']]['jpush_code']))
             pusher.platform = jpush.all_
             pusher.notification = jpush.notification(alert=article['title'])
 

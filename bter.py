@@ -9,7 +9,7 @@ from database import Database
 
 import time
 
-class YunbiParser:
+class BterParser:
     def __init__(self, config, spider, database):
         self.config = config
         self.spider = spider
@@ -21,7 +21,7 @@ class YunbiParser:
             return None
 
         soup = BeautifulSoup(html, "html.parser")
-        return soup.select(".article-list-link")
+        return soup.select(".entry")
 
     def getArticleContent(self, link):
         html = self.spider.openUrl(link)
@@ -29,7 +29,9 @@ class YunbiParser:
             return None
 
         soup = BeautifulSoup(html, "html.parser")
-        return str(soup.select(".article-content")[0])
+        t = soup.select('.new-dtl-info')[0].span.text
+        content = str(soup.select(".dtl-content")[0])
+        return t, content
 
     def updateDB(self, link):
         oldArticles = self.database.getNewsCollection()
@@ -40,15 +42,13 @@ class YunbiParser:
 
         newArticles = []
         for articleInfo in reversed(response):
-            title = articleInfo.text
-            link = self.config.website[self.config.YUNBI]['domain'] + articleInfo['href']
+            title = articleInfo.a['title']
+            link = self.config.website[self.config.BTER]['domain'] + articleInfo.a['href']
             count = oldArticles.count()
 
             if not oldArticles.find_one({'link':link}):
 
-                timeArray = time.localtime(time.time())
-                formatedTime = time.strftime("%Y-%m-%d %H:%M:%S", timeArray)
-                content = self.getArticleContent(link)
+                formatedTime, content = self.getArticleContent(link)
                 if content is None:
                     continue
 
@@ -66,8 +66,7 @@ class YunbiParser:
 
     def update(self):
         newPush = []
-        newPush.extend(self.updateDB(self.config.website[self.config.YUNBI]['link'][0]))
-        newPush.extend(self.updateDB(self.config.website[self.config.YUNBI]['link'][1]))
+        newPush.extend(self.updateDB(self.config.website[self.config.BTER]['link']))
         return newPush
 
 if __name__ == "__main__":
@@ -75,6 +74,6 @@ if __name__ == "__main__":
     sender = Sender(config)
     database = Database(config)
     spider = Spider(config)
-    parser = YunbiParser(config, spider, database)
+    parser = BterParser(config, spider, database)
     sender.send(parser.update())
     #parser.update()

@@ -7,10 +7,12 @@ from flask.ext.restful import reqparse
 from yunbi import YunbiSpider
 from config import Config
 
+import time
 import json
 
 app = Flask(__name__)
 api = restful.Api(app)
+config = Config()
 
 @api.representation('application/json')
 def output_json(data, code, headers=None):
@@ -20,7 +22,6 @@ def output_json(data, code, headers=None):
     return response
 
 class Announcement(restful.Resource):
-    config = Config()
     spiders = [YunbiSpider(config)]
 
     def parserRequest(self):
@@ -46,4 +47,5 @@ class Announcement(restful.Resource):
 api.add_resource(Announcement, '/api/getNews')
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    #app.run(debug=True)
+    app.run(host=config.host, port=config.port)

@@ -27,6 +27,7 @@ class Config:
     BINANCE = 2
     HUOBI = 3
     OKCOIN = 4
+    CHBTC = 5
 
     # website information
     website = [
@@ -62,8 +63,15 @@ class Config:
         {
             "jpush_code": u"OK",
             "name": u"币行Okcoin",
-            "logo": u"https://www.binance.com/resources/img/logo-cn.svg",
+            "logo": u"https://img.bafang.com/v_20170816001/okcoin/image/new_v1/logoNew.png",
             "link": [u"https://www.okcoin.cn/service.html?currentPage=1"],
-            "domain": u"https://www.okcoin.cn/",
+            "domain": u"https://www.okcoin.cn",
+        },
+        {
+            "jpush_code": u"CH",
+            "name": u"中国比特币",
+            "logo": u"https://s.chbtc.com/statics/img/v2/common/chbtc_logo.png",
+            "link": [u"https://www.chbtc.com/i/blog?type=proclamation"],
+            "domain": u"https://www.chbtc.com",
         },
     ]

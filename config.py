@@ -31,6 +31,7 @@ class Config:
     BTCTRADE = 6
     BTSD = 7
     YBW = 8
+    JUBI = 9
 
     # website information
     website = [
@@ -97,5 +98,12 @@ class Config:
             "logo": u"https://ybh-static.oss-cn-hangzhou.aliyuncs.com/images/ybc_logo_201604281200.png",
             "link": [u'https://www.yuanbao.com/news/?corpid=0'],
             "domain": u'https://www.yuanbao.com',
+        },
+        {
+            "jpush_code": u"JB",
+            "name": u"聚币网",
+            "logo": u"https://www.jubi.com/images/jubi/logo.png?v=2.0",
+            "link": [u'https://www.jubi.com/gonggao/'],
+            "domain": u'https://www.jubi.com',
         },
     ]

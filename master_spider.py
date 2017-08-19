@@ -11,6 +11,15 @@ from huobi import HuobiSpider
 from okcoin import OKCoinSpider
 from chbtc import CHBTCSpider
 from btctrade import BtcTradeSpider
+from btsd import BTSDSpider
+from yuanbao import YuanbaoSpider
+from jubi import JubiSpider
+from bijiu import BijiuSpider
+from dahonghuo import DahonghuoSpider
+from b8w import B8Spider
+
+# coinvc, is also coded as 币交所, the spider is not usable
+from coinvc import CoinVCSpider
 
 class MasterSpider:
     def __init__(self):
@@ -32,6 +41,20 @@ class MasterSpider:
                         database=self.database),
             BtcTradeSpider(config=self.config,
                         database=self.database),
+            BTSDSpider(config=self.config,
+                           database=self.database),
+            YuanbaoSpider(config=self.config,
+                       database=self.database),
+            JubiSpider(config=self.config,
+                          database=self.database),
+            BijiuSpider(config=self.config,
+                       database=self.database),
+            CoinVCSpider(config=self.config,
+                        database=self.database),
+            DahonghuoSpider(config=self.config,
+                         database=self.database),
+            B8Spider(config=self.config,
+                            database=self.database),
         ]
 
     def run(self):

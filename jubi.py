@@ -9,7 +9,7 @@ from database import Database
 
 import datetime
 
-class YuanbaoSpider(Spider):
+class JubiSpider(Spider):
     def __init__(self, config, database):
         Spider.__init__(self, config, database, config.JUBI)
 
@@ -54,6 +54,6 @@ if __name__ == "__main__":
     config = Config()
     sender = Sender(config)
     database = Database(config)
-    parser = YuanbaoSpider(config, database)
+    parser = JubiSpider(config, database)
     #sender.send(parser.update())
     parser.update()

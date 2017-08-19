@@ -23,13 +23,14 @@ class Config:
     # website code
     YUNBI = 0
     BTER = 1
+    BINANCE = 2
 
     # website information
     website = [
         {
             "jpush_code": u"YB",
             "name": u"云币网",
-            "logo": u"https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1502904824728&di=34ee91802f42536c973730386246bef6&imgtype=jpg&src=http%3A%2F%2Fimg0.imgtn.bdimg.com%2Fit%2Fu%3D1256965929%2C1781527151%26fm%3D214%26gp%3D0.jpg",
+            "logo": u"https://p12.zdassets.com/hc/settings_assets/1604264/115000110067/rUpcir5P4PoBxhxqUqXcSQ-Group.png",
             "link": [u'https://yunbi.zendesk.com/hc/zh-cn/sections/115001440667-%E7%B3%BB%E7%BB%9F%E5%85%AC%E5%91%8A?page=1',
                      u'https://yunbi.zendesk.com/hc/zh-cn/sections/115001437708-%E4%B8%9A%E5%8A%A1%E5%85%AC%E5%91%8A?page=1'],
             "domain": u'https://yunbi.zendesk.com',
@@ -40,5 +41,12 @@ class Config:
             "logo": u"http://www.wanbizu.com/uploads/allimg/170811/0K51224M-2.png",
             "link": u"https://cn.bter.com/articlelist/ann",
             "domain": u"https://cn.bter.com",
+        },
+        {
+            "jpush_code": u"BA",
+            "name": u"币安",
+            "logo": u"https://www.binance.com/resources/img/logo-cn.svg",
+            "link": u"https://binance.zendesk.com/hc/zh-cn/sections/115000106672-%E4%B8%9A%E5%8A%A1%E5%85%AC%E5%91%8A",
+            "domain": u"https://binance.zendesk.com",
         }
     ]

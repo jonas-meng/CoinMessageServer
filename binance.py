@@ -9,12 +9,12 @@ from database import Database
 
 import datetime
 
-class YunbiSpider:
+class BinanceSpider:
     def __init__(self, config, spider, database):
         self.config = config
         self.spider = spider
         self.database = database
-        self.website_code = config.YUNBI
+        self.website_code = config.BINANCE
 
     def getArticleInfo(self, link):
         html = self.spider.openUrl(link)
@@ -67,8 +67,7 @@ class YunbiSpider:
 
     def update(self):
         newPush = []
-        newPush.extend(self.updateDB(self.config.website[self.website_code]['link'][0]))
-        newPush.extend(self.updateDB(self.config.website[self.website_code]['link'][1]))
+        newPush.extend(self.updateDB(self.config.website[self.website_code]['link']))
         return newPush
 
 if __name__ == "__main__":
@@ -76,6 +75,6 @@ if __name__ == "__main__":
     sender = Sender(config)
     database = Database(config)
     spider = Spider(config)
-    parser = YunbiSpider(config, spider, database)
+    parser = BinanceSpider(config, spider, database)
     #sender.send(parser.update())
     parser.update()

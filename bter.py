@@ -14,6 +14,7 @@ class BterSpider:
         self.config = config
         self.spider = spider
         self.database = database
+        self.website_code = config.BTER
 
     def getArticleInfo(self, link):
         html = self.spider.openUrl(link)
@@ -57,7 +58,7 @@ class BterSpider:
             #if (len(newArticles) > 0):
             #    continue
             title = articleInfo.a['title']
-            link = self.config.website[self.config.BTER]['domain'] + articleInfo.a['href']
+            link = self.config.website[self.website_code]['domain'] + articleInfo.a['href']
             count = oldArticles.count()
 
             if not oldArticles.find_one({'link':link}):
@@ -67,7 +68,7 @@ class BterSpider:
                     continue
 
                 articleInfo = {"id": count,
-                               "code": self.config.YUNBI,
+                               "code": self.website_code,
                                "title":title,
                                "time": formatedTime,
                                "link":link,
@@ -80,7 +81,7 @@ class BterSpider:
 
     def update(self):
         newPush = []
-        newPush.extend(self.updateDB(self.config.website[self.config.BTER]['link']))
+        newPush.extend(self.updateDB(self.config.website[self.website_code]['link']))
         return newPush
 
 if __name__ == "__main__":

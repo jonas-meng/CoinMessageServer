@@ -53,8 +53,9 @@ class Spider:
 
         newArticles = []
         for articleInfo in reversed(response):
-            if (len(newArticles) > 0):
-                continue
+            # TEST ONLY
+            #if (len(newArticles) > 0):
+            #    continue
             title, link = self.getArticleTitleAndLink(articleInfo)
             count = oldArticles.count()
 

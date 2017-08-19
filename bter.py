@@ -24,16 +24,21 @@ class BterSpider(Spider):
     def getArticleContent(self, link):
         html = self.openUrl(link)
         if html is None:
-            return None
+            return None, None
 
         soup = BeautifulSoup(html, "html.parser")
 
         # obtain news date time
         t = soup.select('.new-dtl-info')[0].span.text
-        t = datetime.datetime.strptime(t, '%Y-%m-%d %H:%M:%S')
+        if not t:
+            return None, None
+        t = datetime.datetime.strptime(t.strip(), '%Y-%m-%d %H:%M:%S')
 
         # remove redundant information
-        content = soup.select(".dtl-content")[0]
+        content = soup.select(".dtl-content")
+        if not content:
+            return None, None
+        content = content[0]
         content.select(".prenext")[0].extract()
         content.select("#snsshare")[0].extract()
         content.select("style")[0].extract()

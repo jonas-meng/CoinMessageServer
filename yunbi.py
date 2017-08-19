@@ -24,11 +24,14 @@ class YunbiSpider(Spider):
     def getArticleContent(self, link):
         html = self.openUrl(link)
         if html is None:
-            return None
+            return None, None
 
         soup = BeautifulSoup(html, "html.parser")
         t = datetime.datetime.now()
-        return t, str(soup.select(".article-content")[0])
+        content = soup.select(".article-content")
+        if not content:
+            return None, None
+        return t, str(content[0])
 
     def getArticleTitleAndLink(self, articleInfo):
         title = articleInfo.text

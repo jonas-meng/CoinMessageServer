@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding:utf-8 -*-
 
-from bs4 import BeautifulSoup, Comment
+from bs4 import BeautifulSoup
 from config import Config
 from spider import Spider
 from sender import Sender
@@ -9,9 +9,14 @@ from database import Database
 
 import datetime
 
-class HuobiSpider(Spider):
+
+class OKCoinSpider(Spider):
+    '''
+    OKCoin has some weired behavior that some of their announcements are not available,
+    which would incur undesired issues on the spider
+    '''
     def __init__(self, config, database):
-        Spider.__init__(self, config, database, config.HUOBI)
+        Spider.__init__(self, config, database, config.OKCOIN)
 
     def getArticleInfo(self, link):
         html = self.openUrl(link)
@@ -19,7 +24,7 @@ class HuobiSpider(Spider):
             return None
 
         soup = BeautifulSoup(html, "html.parser")
-        return soup.select(".tit")
+        return soup.select(".spanOne")
 
     def getArticleContent(self, link):
         html = self.openUrl(link)
@@ -28,29 +33,26 @@ class HuobiSpider(Spider):
 
         soup = BeautifulSoup(html, "html.parser")
 
-        content = soup.select(".notice.detail")
-        if not content:
-            return None, None
-        content = content[0]
-
-        # obtain news date time
-        t = content.li.span.text
-        t = datetime.datetime.strptime(t.strip(), '%Y-%m-%d %H:%M:%S')
+        t = soup.select(".time")
         if not t:
             return None, None
+        t = t[0].text
+        t = datetime.datetime.strptime(t.strip(), '%Y-%m-%d %H:%M')
 
-        content = str(content)
-        return t, content
+        content = soup.select(".invitation_content")
+        if not content:
+            return None, None
+        return t, str(content[0])
 
     def getArticleTitleAndLink(self, articleInfo):
         title = articleInfo.a.text
-        link = self.config.website[self.website_code]['domain'] + articleInfo.a['href']
+        link = articleInfo.a['href']
         return title, link
 
 if __name__ == "__main__":
     config = Config()
     sender = Sender(config)
     database = Database(config)
-    parser = HuobiSpider(config, database)
+    parser = OKCoinSpider(config, database)
     #sender.send(parser.update())
     parser.update()

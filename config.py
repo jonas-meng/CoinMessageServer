@@ -26,6 +26,7 @@ class Config:
     BTER = 1
     BINANCE = 2
     HUOBI = 3
+    OKCOIN = 4
 
     # website information
     website = [
@@ -57,5 +58,12 @@ class Config:
             "logo": u"https://www.binance.com/resources/img/logo-cn.svg",
             "link": [u"https://www.huobi.com/p/content/notice"],
             "domain": u"https://www.huobi.com",
-        }
+        },
+        {
+            "jpush_code": u"OK",
+            "name": u"币行Okcoin",
+            "logo": u"https://www.binance.com/resources/img/logo-cn.svg",
+            "link": [u"https://www.okcoin.cn/service.html?currentPage=1"],
+            "domain": u"https://www.okcoin.cn/",
+        },
     ]

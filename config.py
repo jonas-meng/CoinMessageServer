@@ -8,6 +8,7 @@ class Config:
     # acceptable http connection and read time
     http_connect_time = 6
     http_read_time = 20
+    http_header = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/40.0.2214.115 Safari/537.36'}
 
     # rabbitmq news push queue
     rabbit_push_news_queue = 'push_news'
@@ -24,6 +25,7 @@ class Config:
     YUNBI = 0
     BTER = 1
     BINANCE = 2
+    HUOBI = 3
 
     # website information
     website = [
@@ -48,5 +50,12 @@ class Config:
             "logo": u"https://www.binance.com/resources/img/logo-cn.svg",
             "link": u"https://binance.zendesk.com/hc/zh-cn/sections/115000106672-%E4%B8%9A%E5%8A%A1%E5%85%AC%E5%91%8A",
             "domain": u"https://binance.zendesk.com",
+        },
+        {
+            "jpush_code": u"HB",
+            "name": u"火币网",
+            "logo": u"https://www.binance.com/resources/img/logo-cn.svg",
+            "link": u"https://www.huobi.com/p/content/notice",
+            "domain": u"https://www.huobi.com",
         }
     ]

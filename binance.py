@@ -37,7 +37,7 @@ class BinanceSpider:
 
         response = self.getArticleInfo(link)
         if response is None:
-            return
+            return []
 
         newArticles = []
         for articleInfo in reversed(response):

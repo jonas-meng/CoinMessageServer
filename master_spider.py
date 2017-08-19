@@ -7,6 +7,7 @@ from sender import Sender
 from yunbi import YunbiSpider
 from bter import BterSpider
 from binance import BinanceSpider
+from huobi import HuobiSpider
 from spider import Spider
 
 class MasterSpider:
@@ -25,6 +26,9 @@ class MasterSpider:
             BinanceSpider(config=self.config,
                        database=self.database,
                        spider=self.spider),
+            HuobiSpider(config=self.config,
+                          database=self.database,
+                          spider=self.spider),
         ]
 
     def run(self):

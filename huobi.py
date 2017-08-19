@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding:utf-8 -*-
 
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup, Comment
 from config import Config
 from spider import Spider
 from sender import Sender
@@ -9,12 +9,12 @@ from database import Database
 
 import datetime
 
-class YunbiSpider:
+class HuobiSpider:
     def __init__(self, config, spider, database):
         self.config = config
         self.spider = spider
         self.database = database
-        self.website_code = config.YUNBI
+        self.website_code = config.HUOBI
 
     def getArticleInfo(self, link):
         html = self.spider.openUrl(link)
@@ -22,7 +22,7 @@ class YunbiSpider:
             return None
 
         soup = BeautifulSoup(html, "html.parser")
-        return soup.select(".article-list-link")
+        return soup.select(".tit")
 
     def getArticleContent(self, link):
         html = self.spider.openUrl(link)
@@ -30,7 +30,15 @@ class YunbiSpider:
             return None
 
         soup = BeautifulSoup(html, "html.parser")
-        return str(soup.select(".article-content")[0])
+
+        content = soup.select(".notice.detail")[0]
+
+        # obtain news date time
+        t = content.li.span.text
+        t = datetime.datetime.strptime(t, '%Y-%m-%d %H:%M:%S')
+
+        content = str(content)
+        return t, content
 
     def updateDB(self, link):
         oldArticles = self.database.getNewsCollection()
@@ -43,20 +51,20 @@ class YunbiSpider:
         for articleInfo in reversed(response):
             #if (len(newArticles) > 0):
             #    continue
-            title = articleInfo.text
-            link = self.config.website[self.website_code]['domain'] + articleInfo['href']
+            title = articleInfo.a.text
+            link = self.config.website[self.website_code]['domain'] + articleInfo.a['href']
             count = oldArticles.count()
 
             if not oldArticles.find_one({'link':link}):
 
-                content = self.getArticleContent(link)
+                formatedTime, content = self.getArticleContent(link)
                 if content is None:
                     continue
 
                 articleInfo = {"id": count,
                                "code": self.website_code,
                                "title":title,
-                               "time": datetime.datetime.now(),
+                               "time": formatedTime,
                                "link":link,
                                "content": str(content)}
 
@@ -67,8 +75,7 @@ class YunbiSpider:
 
     def update(self):
         newPush = []
-        newPush.extend(self.updateDB(self.config.website[self.website_code]['link'][0]))
-        newPush.extend(self.updateDB(self.config.website[self.website_code]['link'][1]))
+        newPush.extend(self.updateDB(self.config.website[self.website_code]['link']))
         return newPush
 
 if __name__ == "__main__":
@@ -76,6 +83,6 @@ if __name__ == "__main__":
     sender = Sender(config)
     database = Database(config)
     spider = Spider(config)
-    parser = YunbiSpider(config, spider, database)
+    parser = HuobiSpider(config, spider, database)
     #sender.send(parser.update())
     parser.update()

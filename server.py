@@ -33,7 +33,7 @@ def getArticlesInJson(website_codes, limit=10):
         "logo": config.website[articleInfo['code']]['logo'].encode('utf-8'),
         },
         "title": articleInfo['title'].encode('utf-8'),
-        "time": articleInfo['time'].encode('utf-8'),
+        "time": str(articleInfo['time']).encode('utf-8'),
         "content": articleInfo['content'].encode('utf-8')})
     return result
 
@@ -64,5 +64,5 @@ class Announcement(restful.Resource):
 api.add_resource(Announcement, '/api/getNews')
 
 if __name__ == '__main__':
-    app.run(debug=True)
-    #app.run(host=config.host, port=config.port)
+    #app.run(debug=True)
+    app.run(host=config.host, port=config.port)

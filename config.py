@@ -41,21 +41,21 @@ class Config:
             "jpush_code": u"BTR",
             "name": u"比特儿",
             "logo": u"http://www.wanbizu.com/uploads/allimg/170811/0K51224M-2.png",
-            "link": u"https://cn.bter.com/articlelist/ann",
+            "link": [u"https://cn.bter.com/articlelist/ann"],
             "domain": u"https://cn.bter.com",
         },
         {
             "jpush_code": u"BA",
             "name": u"币安",
             "logo": u"https://www.binance.com/resources/img/logo-cn.svg",
-            "link": u"https://binance.zendesk.com/hc/zh-cn/sections/115000106672-%E4%B8%9A%E5%8A%A1%E5%85%AC%E5%91%8A",
+            "link": [u"https://binance.zendesk.com/hc/zh-cn/sections/115000106672-%E4%B8%9A%E5%8A%A1%E5%85%AC%E5%91%8A"],
             "domain": u"https://binance.zendesk.com",
         },
         {
             "jpush_code": u"HB",
             "name": u"火币网",
             "logo": u"https://www.binance.com/resources/img/logo-cn.svg",
-            "link": u"https://www.huobi.com/p/content/notice",
+            "link": [u"https://www.huobi.com/p/content/notice"],
             "domain": u"https://www.huobi.com",
         }
     ]

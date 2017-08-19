@@ -30,6 +30,7 @@ class Config:
     CHBTC = 5
     BTCTRADE = 6
     BTSD = 7
+    YBW = 8
 
     # website information
     website = [
@@ -89,5 +90,12 @@ class Config:
             "logo": u"http://www.btc38.com/statics/img/sdc_logo.png",
             "link": [u'http://www.btc38.com/company_notices.html'],
             "domain": u'http://www.btc38.com',
+        },
+        {
+            "jpush_code": u"YBW",
+            "name": u"元宝网",
+            "logo": u"https://ybh-static.oss-cn-hangzhou.aliyuncs.com/images/ybc_logo_201604281200.png",
+            "link": [u'https://www.yuanbao.com/news/?corpid=0'],
+            "domain": u'https://www.yuanbao.com',
         },
     ]

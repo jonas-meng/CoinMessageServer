@@ -54,8 +54,8 @@ class Spider:
         newArticles = []
         for articleInfo in reversed(response):
             # TEST ONLY
-            #if (len(newArticles) > 0):
-            #    continue
+            if (len(newArticles) > 0):
+                continue
             title, link = self.getArticleTitleAndLink(articleInfo)
 
             if not oldArticles.find_one({'link':link}):

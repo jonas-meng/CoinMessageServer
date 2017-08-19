@@ -30,7 +30,7 @@ def getArticlesInJson(website_codes, limit=10):
         result.append({
         "website":{
         "name": config.website[articleInfo['code']]['name'].encode('utf-8'),
-        "logo": config.website[articleInfo['code']]['logo'].encode('utf-8'),
+        "code": config.website[articleInfo['code']]['jpush_code'].encode('utf-8'),
         },
         "title": articleInfo['title'].encode('utf-8'),
         "time": str(articleInfo['time']).encode('utf-8'),

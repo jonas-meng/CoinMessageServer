@@ -40,7 +40,7 @@ class MasterSpider:
         newPush = []
         for eachSpider in self.spiders:
             newPush.extend(eachSpider.update())
-        if not newPush:
+        if newPush:
             self.sender.send(newPush)
 
 if __name__ == "__main__":

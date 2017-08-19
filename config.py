@@ -120,9 +120,9 @@ class Config:
         {
             "jpush_code": u"BJS",
             "name": u"币交所",
-            "logo": u"https://www.btc9.com/Uploads/Public/Uploads/2016-04-12/570c8f8fc65d4.png",
-            "link": [u'https://www.btc9.com/Art/index/id/1.html'],
-            "domain": u'https://www.btc9.com',
+            "logo": u"https://www.coinvc.com/images/logo.png",
+            "link": [u'https://www.coinvc.com/news'],
+            "domain": u'https://www.coinvc.com',
         },
         {
             "jpush_code": u"DHH",
@@ -134,8 +134,8 @@ class Config:
         {
             "jpush_code": u"B8",
             "name": u"币8网",
-            "logo": u"https://www.btc9.com/Uploads/Public/Uploads/2016-04-12/570c8f8fc65d4.png",
-            "link": [u'https://www.btc9.com/Art/index/id/1.html'],
-            "domain": u'https://www.btc9.com',
+            "logo": u"https://www.b8wang.com/images/thanksgad_03.png",
+            "link": [u'https://www.b8wang.com/news'],
+            "domain": u'https://www.b8wang.com/',
         },
     ]

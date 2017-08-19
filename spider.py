@@ -54,9 +54,11 @@ class Spider:
         newArticles = []
         for articleInfo in reversed(response):
             # TEST ONLY
-            if (len(newArticles) > 0):
-                continue
+            #if (len(newArticles) > 0):
+            #    continue
             title, link = self.getArticleTitleAndLink(articleInfo)
+            if not link:
+                continue
 
             if not oldArticles.find_one({'link':link}):
 
@@ -78,4 +80,4 @@ if __name__ == "__main__":
     config = Config()
     database = Database(config)
     spider = Spider(config, database, config.YUNBI)
-    spider.openUrl(u"https://www.btctrade.com/gonggao/2680.html")
+    spider.openUrl(u"https://www.coinvc.com/news")

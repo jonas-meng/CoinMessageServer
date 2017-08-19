@@ -7,9 +7,9 @@ from spider import Spider
 from sender import Sender
 from database import Database
 
-import time
+import datetime
 
-class YunbiParser:
+class YunbiSpider:
     def __init__(self, config, spider, database):
         self.config = config
         self.spider = spider
@@ -40,14 +40,14 @@ class YunbiParser:
 
         newArticles = []
         for articleInfo in reversed(response):
+            if (len(newArticles) > 0):
+                continue
             title = articleInfo.text
             link = self.config.website[self.config.YUNBI]['domain'] + articleInfo['href']
             count = oldArticles.count()
 
             if not oldArticles.find_one({'link':link}):
 
-                timeArray = time.localtime(time.time())
-                formatedTime = time.strftime("%Y-%m-%d %H:%M:%S", timeArray)
                 content = self.getArticleContent(link)
                 if content is None:
                     continue
@@ -55,7 +55,7 @@ class YunbiParser:
                 articleInfo = {"id": count,
                                "code": self.config.YUNBI,
                                "title":title,
-                               "time": formatedTime,
+                               "time": datetime.datetime.now(),
                                "link":link,
                                "content": str(content)}
 
@@ -75,6 +75,6 @@ if __name__ == "__main__":
     sender = Sender(config)
     database = Database(config)
     spider = Spider(config)
-    parser = YunbiParser(config, spider, database)
-    sender.send(parser.update())
-    #parser.update()
+    parser = YunbiSpider(config, spider, database)
+    #sender.send(parser.update())
+    parser.update()

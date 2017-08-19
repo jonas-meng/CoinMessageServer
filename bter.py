@@ -1,15 +1,15 @@
 #!/usr/bin/python
 # -*- coding:utf-8 -*-
 
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup, Comment
 from config import Config
 from spider import Spider
 from sender import Sender
 from database import Database
 
-import time
+import datetime
 
-class BterParser:
+class BterSpider:
     def __init__(self, config, spider, database):
         self.config = config
         self.spider = spider
@@ -29,8 +29,20 @@ class BterParser:
             return None
 
         soup = BeautifulSoup(html, "html.parser")
+
+        # obtain news date time
         t = soup.select('.new-dtl-info')[0].span.text
-        content = str(soup.select(".dtl-content")[0])
+        t = datetime.datetime.strptime(t, '%Y-%m-%d %H:%M:%S')
+
+        # remove redundant information
+        content = soup.select(".dtl-content")[0]
+        content.select(".prenext")[0].extract()
+        content.select("#snsshare")[0].extract()
+        content.select("style")[0].extract()
+        comments = content.find_all(text = lambda text: isinstance(text, Comment))
+        [comment.extract() for comment in comments]
+
+        content = str(content)
         return t, content
 
     def updateDB(self, link):
@@ -42,6 +54,8 @@ class BterParser:
 
         newArticles = []
         for articleInfo in reversed(response):
+            #if (len(newArticles) > 0):
+            #    continue
             title = articleInfo.a['title']
             link = self.config.website[self.config.BTER]['domain'] + articleInfo.a['href']
             count = oldArticles.count()
@@ -74,6 +88,6 @@ if __name__ == "__main__":
     sender = Sender(config)
     database = Database(config)
     spider = Spider(config)
-    parser = BterParser(config, spider, database)
-    sender.send(parser.update())
-    #parser.update()
+    parser = BterSpider(config, spider, database)
+    #sender.send(parser.update())
+    parser.update()

@@ -26,7 +26,7 @@ def getArticlesInJson(website_codes, limit=10):
     articleInfoCollection = database.getNewsCollection()
     for articleInfo in articleInfoCollection\
             .find({'code': {'$in': website_codes}})\
-            .sort("id",-1).limit(limit):
+            .sort("time",-1).limit(limit):
         result.append({
         "website":{
         "name": config.website[articleInfo['code']]['name'].encode('utf-8'),

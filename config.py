@@ -32,6 +32,7 @@ class Config:
     BTSD = 7
     YBW = 8
     JUBI = 9
+    BJW = 10
 
     # website information
     website = [
@@ -105,5 +106,12 @@ class Config:
             "logo": u"https://www.jubi.com/images/jubi/logo.png?v=2.0",
             "link": [u'https://www.jubi.com/gonggao/'],
             "domain": u'https://www.jubi.com',
+        },
+        {
+            "jpush_code": u"BJW",
+            "name": u"币久网",
+            "logo": u"https://www.btc9.com/Uploads/Public/Uploads/2016-04-12/570c8f8fc65d4.png",
+            "link": [u'https://www.btc9.com/Art/index/id/1.html'],
+            "domain": u'https://www.btc9.com',
         },
     ]

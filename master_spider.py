@@ -11,14 +11,12 @@ from huobi import HuobiSpider
 from okcoin import OKCoinSpider
 from chbtc import CHBTCSpider
 from btctrade import BtcTradeSpider
-from spider import Spider
 
 class MasterSpider:
     def __init__(self):
         self.config = Config()
         self.database = Database(self.config)
         self.sender = Sender(self.config)
-        self.spider = Spider(self.config)
         self.spiders = [
             YunbiSpider(config=self.config,
                         database=self.database),

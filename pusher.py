@@ -17,13 +17,13 @@ class NewsPusher:
         self.master_secret = credential['master_secret'].encode('utf-8')
 
     def callback(self, ch, method, properties, body):
-        news_id = json.loads(body)
+        links = json.loads(body)
         news = self.database.getNewsCollection()
 
         _jpush = jpush.JPush(self.appKey, self.master_secret)
 
-        for id in news_id:
-            article = news.find_one({'id':id})
+        for link in links:
+            article = news.find_one({'link': link})
             if article is None:
                 continue
 

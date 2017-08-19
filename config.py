@@ -57,7 +57,7 @@ class Config:
         {
             "jpush_code": u"HB",
             "name": u"火币网",
-            "logo": u"https://www.binance.com/resources/img/logo-cn.svg",
+            "logo": u"https://baike.baidu.com/pic/%E7%81%AB%E5%B8%81%E7%BD%91/10422221/0/8694a4c27d1ed21b4b669f6ca76eddc450da3f8f?fr=lemma&ct=single#aid=0&pic=8694a4c27d1ed21b4b669f6ca76eddc450da3f8f",
             "link": [u"https://www.huobi.com/p/content/notice"],
             "domain": u"https://www.huobi.com",
         },

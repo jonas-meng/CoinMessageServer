@@ -57,7 +57,6 @@ class Spider:
             #if (len(newArticles) > 0):
             #    continue
             title, link = self.getArticleTitleAndLink(articleInfo)
-            count = oldArticles.count()
 
             if not oldArticles.find_one({'link':link}):
 
@@ -65,16 +64,14 @@ class Spider:
                 if content is None:
                     continue
 
-                articleInfo = {"id": count,
-                               "code": self.website_code,
+                articleInfo = {"code": self.website_code,
                                "title":title,
                                "time": formatedTime,
                                "link":link,
                                "content": str(content)}
 
                 oldArticles.insert(articleInfo)
-                newArticles.append(count)
-                count += 1
+                newArticles.append(link)
         return newArticles
 
 if __name__ == "__main__":

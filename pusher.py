@@ -12,7 +12,7 @@ from database import Database
 class NewsPusher:
     def __init__(self, config, database):
         self.config = config
-        self.logger = logger.getLoggerFC(config.pusher_log)
+        self.logger = logger.getLoggerFC('pusher', config.pusher_log)
         self.database = database
         credential = database.getJpushCredential().find_one({})
         self.appKey = credential['appKey'].encode('utf-8')

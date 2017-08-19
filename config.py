@@ -29,6 +29,7 @@ class Config:
     OKCOIN = 4
     CHBTC = 5
     BTCTRADE = 6
+    BTSD = 7
 
     # website information
     website = [
@@ -57,7 +58,7 @@ class Config:
         {
             "jpush_code": u"HB",
             "name": u"火币网",
-            "logo": u"https://baike.baidu.com/pic/%E7%81%AB%E5%B8%81%E7%BD%91/10422221/0/8694a4c27d1ed21b4b669f6ca76eddc450da3f8f?fr=lemma&ct=single#aid=0&pic=8694a4c27d1ed21b4b669f6ca76eddc450da3f8f",
+            "logo": u"https://static.huobi.com/exchange/src/images/logo_10344.png",
             "link": [u"https://www.huobi.com/p/content/notice"],
             "domain": u"https://www.huobi.com",
         },
@@ -81,5 +82,12 @@ class Config:
             "logo": u"https://www.btctrade.com/img/lang/cn/logo.jpg?v=1.2",
             "link": [u"https://www.btctrade.com/gonggao/"],
             "domain": u"https://www.chbtc.com",
+        },
+        {
+            "jpush_code": u"BTSD",
+            "name": u"比特时代",
+            "logo": u"http://www.btc38.com/statics/img/sdc_logo.png",
+            "link": [u'http://www.btc38.com/company_notices.html'],
+            "domain": u'http://www.btc38.com',
         },
     ]

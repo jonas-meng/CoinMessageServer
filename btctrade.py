@@ -10,13 +10,12 @@ from database import Database
 import datetime
 
 
-class CHBTCSpider(Spider):
+class BtcTradeSpider(Spider):
     '''
-    The time stamp on CHBTC is bit weired.
-    What we get is in form of %Y-%m-%d %H:%M:%S.%f, whereas it appears on website as %Y-%m-%d %H:%M
+    BTCTrqade accept https request but not http request
     '''
     def __init__(self, config, database):
-        Spider.__init__(self, config, database, config.CHBTC)
+        Spider.__init__(self, config, database, config.BTCTRADE)
 
     def getArticleInfo(self, link):
         html = self.openUrl(link)
@@ -24,7 +23,7 @@ class CHBTCSpider(Spider):
             return None
 
         soup = BeautifulSoup(html, "html.parser")
-        return soup.select("article.envor-post")
+        return soup.select("div.hd")
 
     def getArticleContent(self, link):
         html = self.openUrl(link)
@@ -33,28 +32,27 @@ class CHBTCSpider(Spider):
 
         soup = BeautifulSoup(html, "html.parser")
 
-        t = soup.select("div.page-right")
-        t = t[0].select("span")
+        t = soup.select("div.news_title")
+        t = t[0].dl.dd.text
         if not t:
             return None, None
-        t = t[0].text
-        t = datetime.datetime.strptime(t.strip(), '%Y-%m-%d %H:%M:%S.%f')
+        t = datetime.datetime.strptime(t.strip(), '%Y-%m-%d')
 
-        content = soup.select("article.page-content")
+        content = soup.select("div.news_desc")
         if not content:
             return None, None
         return t, str(content[0])
 
     def getArticleTitleAndLink(self, articleInfo):
-        tag_a = articleInfo.header.h3.a
+        tag_a = articleInfo.a
         title = tag_a.text
-        link = self.config.website[self.website_code]['domain'] + tag_a['href']
+        link = 'https://' + tag_a['href'][7:]
         return title, link
 
 if __name__ == "__main__":
     config = Config()
     sender = Sender(config)
     database = Database(config)
-    parser = CHBTCSpider(config, database)
+    parser = BtcTradeSpider(config, database)
     #sender.send(parser.update())
     parser.update()

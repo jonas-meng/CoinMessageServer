@@ -81,4 +81,4 @@ if __name__ == "__main__":
     config = Config()
     database = Database(config)
     spider = Spider(config, database, config.YUNBI)
-    spider.openUrl(u"https://www.huobi.com/p/content/notice")
+    spider.openUrl(u"https://www.btctrade.com/gonggao/2680.html")

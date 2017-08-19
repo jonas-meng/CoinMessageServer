@@ -28,6 +28,7 @@ class Config:
     HUOBI = 3
     OKCOIN = 4
     CHBTC = 5
+    BTCTRADE = 6
 
     # website information
     website = [
@@ -72,6 +73,13 @@ class Config:
             "name": u"中国比特币",
             "logo": u"https://s.chbtc.com/statics/img/v2/common/chbtc_logo.png",
             "link": [u"https://www.chbtc.com/i/blog?type=proclamation"],
+            "domain": u"https://www.chbtc.com",
+        },
+        {
+            "jpush_code": u"BT",
+            "name": u"比特币交易网",
+            "logo": u"https://www.btctrade.com/img/lang/cn/logo.jpg?v=1.2",
+            "link": [u"https://www.btctrade.com/gonggao/"],
             "domain": u"https://www.chbtc.com",
         },
     ]

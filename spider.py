@@ -5,11 +5,16 @@ from config import Config
 from database import Database
 
 import requests
+import logger
+import time
+import random
 
 class Spider:
 
     def __init__(self, config, database, website_code):
         self.config = config
+        # not specifying name would result in redundant log record
+        self.logger = logger.getLoggerFC(config.website[website_code]['jpush_code'], config.spider_log)
         self.database = database
         self.header = config.http_header
         self.http_connect_time = config.http_connect_time
@@ -23,8 +28,7 @@ class Spider:
                                                self.http_read_time))
             response.raise_for_status()
         except requests.RequestException as e:
-            print "HTTP REQUEST HAS FAILED"
-            print e
+            self.logger.exception(e)
             return None
         else:
             return response.text
@@ -54,13 +58,19 @@ class Spider:
         newArticles = []
         for articleInfo in reversed(response):
             # TEST ONLY
-            #if (len(newArticles) > 0):
+            # if (len(newArticles) > 0):
             #    continue
             title, link = self.getArticleTitleAndLink(articleInfo)
             if not link:
                 continue
 
             if not oldArticles.find_one({'link':link}):
+                # to avoid blocking by the website
+                # sleep for x secs, where x is larger than 1 and smaller than 5
+                time.sleep(random.randint(self.config.min_time_interval, self.config.max_time_interval))
+
+                msg = self.config.website[self.website_code]['jpush_code'] + " - new article - " + link
+                self.logger.info(msg)
 
                 formatedTime, content = self.getArticleContent(link)
                 if content is None:

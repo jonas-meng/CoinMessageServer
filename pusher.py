@@ -4,6 +4,7 @@
 import pika
 import jpush
 import json
+import logger
 
 from config import Config
 from database import Database
@@ -11,6 +12,7 @@ from database import Database
 class NewsPusher:
     def __init__(self, config, database):
         self.config = config
+        self.logger = logger.getLoggerFC(config.pusher_log)
         self.database = database
         credential = database.getJpushCredential().find_one({})
         self.appKey = credential['appKey'].encode('utf-8')
@@ -31,6 +33,7 @@ class NewsPusher:
             pusher.audience = jpush.audience(jpush.tag(self.config.website[article['code']]['jpush_code']))
             pusher.platform = jpush.all_
             pusher.notification = jpush.notification(alert=article['title'])
+            self.logger.info("PUSH - " + self.config.website[article['code']]['jpush_code'] + " - " + link)
 
             try:
                 response = pusher.send()

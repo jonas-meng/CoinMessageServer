@@ -8,11 +8,19 @@ from config import Config
 from database import Database
 
 import json
+import logging
 
 app = Flask(__name__)
 api = restful.Api(app)
 config = Config()
 database = Database(config)
+
+# add log file handler
+file_handler = logging.FileHandler(config.server_log)
+file_handler.setLevel(logging.WARNING)
+formatter = logging.Formatter('%(asctime)s %(filename)s[line:%(lineno)d] %(levelname)s %(message)s')
+file_handler.setFormatter(formatter)
+app.logger.addHandler(file_handler)
 
 @api.representation('application/json')
 def output_json(data, code, headers=None):

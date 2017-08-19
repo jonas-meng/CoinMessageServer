@@ -33,6 +33,9 @@ class Config:
     YBW = 8
     JUBI = 9
     BJW = 10
+    BJS = 11
+    DHH = 12
+    B8 = 13
 
     # website information
     website = [
@@ -110,6 +113,27 @@ class Config:
         {
             "jpush_code": u"BJW",
             "name": u"币久网",
+            "logo": u"https://www.btc9.com/Uploads/Public/Uploads/2016-04-12/570c8f8fc65d4.png",
+            "link": [u'https://www.btc9.com/Art/index/id/1.html'],
+            "domain": u'https://www.btc9.com',
+        },
+        {
+            "jpush_code": u"BJS",
+            "name": u"币交所",
+            "logo": u"https://www.btc9.com/Uploads/Public/Uploads/2016-04-12/570c8f8fc65d4.png",
+            "link": [u'https://www.btc9.com/Art/index/id/1.html'],
+            "domain": u'https://www.btc9.com',
+        },
+        {
+            "jpush_code": u"DHH",
+            "name": u"大红火",
+            "logo": u"https://www.dahonghuo.com/static/images/fire.png?v=1.0",
+            "link": [u'https://www.dahonghuo.com/announcement/'],
+            "domain": u'https://www.dahonghuo.com',
+        },
+        {
+            "jpush_code": u"B8",
+            "name": u"币8网",
             "logo": u"https://www.btc9.com/Uploads/Public/Uploads/2016-04-12/570c8f8fc65d4.png",
             "link": [u'https://www.btc9.com/Art/index/id/1.html'],
             "domain": u'https://www.btc9.com',

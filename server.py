@@ -9,11 +9,14 @@ from database import Database
 
 import json
 import logging
+import redis
 
 app = Flask(__name__)
 api = restful.Api(app)
 config = Config()
 database = Database(config)
+pool = redis.ConnectionPool(host='localhost', port=6379)
+
 
 # add log file handler
 file_handler = logging.FileHandler(config.server_log)
@@ -24,32 +27,39 @@ app.logger.addHandler(file_handler)
 
 @api.representation('application/json')
 def output_json(data, code, headers=None):
-    response = app.make_response(json.dumps(data, ensure_ascii=False))
+    response = app.make_response(data)
+    #json.dumps(data, ensure_ascii=False))
     response.headers.extend(headers or {})
     response.headers.set('Access-Control-Allow-Origin', '*')
     return response
 
-def getArticlesInJson(website_codes, limit=10):
+def getArticlesInJson(identity, website_codes, limit=10):
     result = []
-    articleInfoCollection = database.getNewsCollection()
-    for articleInfo in articleInfoCollection\
+    r = redis.Redis(connection_pool=pool)
+    key = str(identity)
+    if not r.exists(key):
+        #result = json.loads(r.get(key), encoding='utf-8')
+        articleInfoCollection = database.getNewsCollection()
+        for articleInfo in articleInfoCollection\
             .find({'code': {'$in': website_codes}})\
             .sort("time",-1).limit(limit):
-        result.append({
-        "website":{
-        "name": config.website[articleInfo['code']]['name'].encode('utf-8'),
-        "code": config.website[articleInfo['code']]['jpush_code'].encode('utf-8'),
-        },
-        "title": articleInfo['title'].encode('utf-8'),
-        "time": str(articleInfo['time']).encode('utf-8'),
-        "content": articleInfo['content'].encode('utf-8')})
-    return result
+            result.append({
+            "website":{
+            "name": config.website[articleInfo['code']]['name'].encode('utf-8'),
+            "code": config.website[articleInfo['code']]['jpush_code'].encode('utf-8'),
+            },
+            "title": articleInfo['title'].encode('utf-8'),
+            "time": str(articleInfo['time']).encode('utf-8'),
+            "content": articleInfo['content'].encode('utf-8')})
+        if not r.exists(key):
+            r.set(key, json.dumps({"posts": result}, ensure_ascii=False))
+    return r.get(key)
 
 def identity2code(identity):
     idx = 0
     website_codes = []
     while identity:
-        if (identity & 1):
+        if identity & 1:
             website_codes.append(idx)
         identity = identity >> 1
         idx = idx + 1
@@ -65,12 +75,13 @@ class Announcement(restful.Resource):
 
     def get(self):
         args = self.parserRequest()
-        return {"posts": getArticlesInJson(
+        return getArticlesInJson(
+            args['identity'],
             identity2code(args['identity']),
-            args['number'])}
+            args['number'])
 
 api.add_resource(Announcement, '/api/getNews')
 
 if __name__ == '__main__':
     #app.run(debug=True)
-    app.run(host=config.host, port=config.port)
+    app.run(host=config.host, port=config.port, threaded=True)

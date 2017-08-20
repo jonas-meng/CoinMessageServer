@@ -5,9 +5,12 @@ import pika
 import jpush
 import json
 import logger
+import redis
 
 from config import Config
 from database import Database
+
+pool = redis.ConnectionPool(host='localhost', port=6379)
 
 class NewsPusher:
     def __init__(self, config, database):
@@ -17,6 +20,14 @@ class NewsPusher:
         credential = database.getJpushCredential().find_one({})
         self.appKey = credential['appKey'].encode('utf-8')
         self.master_secret = credential['master_secret'].encode('utf-8')
+
+    def cleanRedis(self, code):
+        r = redis.Redis(connection_pool=pool)
+        website_identity = 1 << code
+        for key in r.keys():
+            identity = int(key)
+            if identity & website_identity:
+                r.delete(identity)
 
     def callback(self, ch, method, properties, body):
         links = json.loads(body)
@@ -28,6 +39,9 @@ class NewsPusher:
             article = news.find_one({'link': link})
             if article is None:
                 continue
+
+            # update outdated cache
+            self.cleanRedis(article['code'])
 
             pusher = _jpush.create_push()
             pusher.audience = jpush.audience(jpush.tag(self.config.website[article['code']]['jpush_code']))

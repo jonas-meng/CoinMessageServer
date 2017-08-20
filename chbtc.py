@@ -38,7 +38,7 @@ class CHBTCSpider(Spider):
         if not t:
             return None, None
         t = t[0].text
-        t = datetime.datetime.strptime(t.strip(), '%Y-%m-%d %H:%M:%S.%f')
+        t = datetime.datetime.strptime(t.strip(), '%Y-%m-%d %H:%M')
 
         content = soup.select("article.page-content")
         if not content:

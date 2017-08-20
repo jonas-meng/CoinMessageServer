@@ -3,3 +3,5 @@ pymongo
 flask
 flask-restful
 requests
+redis
+pika

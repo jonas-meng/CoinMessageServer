@@ -67,7 +67,7 @@ class Spider:
             if not oldArticles.find_one({'link':link}):
                 # to avoid blocking by the website
                 # sleep for x secs, where x is larger than 1 and smaller than 5
-                time.sleep(random.random() * 2)
+                time.sleep(random.random() * 3)
 
                 formatedTime, content = self.getArticleContent(link)
                 if content is None:

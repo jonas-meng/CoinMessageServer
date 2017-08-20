@@ -67,14 +67,14 @@ class Spider:
             if not oldArticles.find_one({'link':link}):
                 # to avoid blocking by the website
                 # sleep for x secs, where x is larger than 1 and smaller than 5
-                time.sleep(random.randint(self.config.min_time_interval, self.config.max_time_interval))
-
-                msg = self.config.website[self.website_code]['jpush_code'] + " - new article - " + link
-                self.logger.info(msg)
+                time.sleep(random.random() * 2)
 
                 formatedTime, content = self.getArticleContent(link)
                 if content is None:
                     continue
+
+                msg = self.config.website[self.website_code]['jpush_code'] + " - new article - " + link
+                self.logger.info(msg)
 
                 articleInfo = {"code": self.website_code,
                                "title":title,

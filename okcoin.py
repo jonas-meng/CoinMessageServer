@@ -24,7 +24,7 @@ class OKCoinSpider(Spider):
             return None
 
         soup = BeautifulSoup(html, "html.parser")
-        return soup.select(".spanOne")
+        return soup.select("li span.spanOne")
 
     def getArticleContent(self, link):
         html = self.openUrl(link)
@@ -47,6 +47,7 @@ class OKCoinSpider(Spider):
     def getArticleTitleAndLink(self, articleInfo):
         title = articleInfo.a.text
         link = articleInfo.a['href']
+        self.logger.info(title + " : " + link)
         return title, link
 
 if __name__ == "__main__":

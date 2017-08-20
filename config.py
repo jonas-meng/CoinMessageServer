@@ -3,8 +3,8 @@
 
 class Config:
     # spider sleep interval
-    min_time_interval = 1
-    max_time_interval = 5
+    min_time_interval = 0.5
+    max_time_interval = 2
 
     # log address
     master_spider_log = 'log/master_spider.log'
@@ -15,7 +15,8 @@ class Config:
     # acceptable http connection and read time
     http_connect_time = 6
     http_read_time = 30
-    http_header = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/40.0.2214.115 Safari/537.36'}
+    http_header = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/40.0.2214.115 Safari/537.36',
+                   'Accept-Language': 'zh-CN'}
 
     # rabbitmq news push queue
     rabbit_push_news_queue = 'push_news'

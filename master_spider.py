@@ -66,18 +66,14 @@ class MasterSpider:
         while True:
             number_of_news = self.invokeSpider()
             self.logger.info(str(number_of_news) + " news discovered")
-            time.sleep(
-                random.randint(
-                    self.config.min_time_interval * 20,
-                    self.config.max_time_interval * 20))
+            time.sleep(random.random() * 60)
 
     def invokeSpider(self):
         newPush = []
         idx = 0
         for eachSpider in self.spiders:
-            if (idx == 11):
-                continue
-            newPush.extend(eachSpider.update())
+            if idx != 11:
+                newPush.extend(eachSpider.update())
             idx = idx + 1
 
         if newPush:

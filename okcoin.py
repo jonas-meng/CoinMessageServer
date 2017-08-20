@@ -47,7 +47,6 @@ class OKCoinSpider(Spider):
     def getArticleTitleAndLink(self, articleInfo):
         title = articleInfo.a.text
         link = articleInfo.a['href']
-        self.logger.info(title + " : " + link)
         return title, link
 
 if __name__ == "__main__":

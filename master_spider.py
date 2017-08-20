@@ -67,7 +67,7 @@ class MasterSpider:
             number_of_news = self.invokeSpider()
             if number_of_news > 0 :
                 self.logger.info(str(number_of_news) + " news discovered")
-            time.sleep((random.random() * 30) + 30)
+            time.sleep((random.random() * 120) + 60)
 
     def invokeSpider(self):
         newPush = []

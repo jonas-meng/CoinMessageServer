@@ -13,8 +13,8 @@ class Config:
     server_log = 'log/server_log'
 
     # acceptable http connection and read time
-    http_connect_time = 6
-    http_read_time = 20
+    http_connect_time = 9
+    http_read_time = 30
     http_header = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/40.0.2214.115 Safari/537.36',
                    'Accept-Language': 'zh-CN'}
 
@@ -101,7 +101,7 @@ class Config:
             "jpush_code": u"BTSD",
             "name": u"比特时代",
             "logo": u"http://www.btc38.com/statics/img/sdc_logo.png",
-            "link": [u'http://www.btc38.com/company_notices.html'],
+            "link": [u'http://www.btc38.com/company_notices.html/../newsInfo.php?n=0.5'],
             "domain": u'http://www.btc38.com',
         },
         {
@@ -129,7 +129,7 @@ class Config:
             "jpush_code": u"BJS",
             "name": u"币交所",
             "logo": u"https://www.coinvc.com/images/logo.png",
-            "link": [u'https://www.coinvc.com/news'],
+            "link": [u'https://api.coinvc.com/api/v2/getNews/'],
             "domain": u'https://www.coinvc.com',
         },
         {

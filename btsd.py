@@ -26,8 +26,7 @@ class BTSDSpider(Spider):
 
     def openSpecialUrl(self, url):
         try:
-            response = requests.post('http://www.btc38.com/company_notices.html/../newsInfo.php?n=0.5',
-                                     data={'target': 1, 'page': 1}, headers=self.headers)
+            response = requests.post(url, data={'target': 1, 'page': 1}, headers=self.headers)
             response.raise_for_status()
         except requests.RequestException as e:
             self.logger.exception(e)
@@ -62,7 +61,6 @@ class BTSDSpider(Spider):
     def getArticleTitleAndLink(self, articleInfo):
         title = articleInfo['title']
         link = articleInfo['url']
-        print title, link
         return title, link
 
 if __name__ == "__main__":

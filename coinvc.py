@@ -8,6 +8,7 @@ from sender import Sender
 from database import Database
 
 import datetime
+import requests
 
 class CoinVCSpider(Spider):
     '''
@@ -15,45 +16,45 @@ class CoinVCSpider(Spider):
     '''
     def __init__(self, config, database):
         Spider.__init__(self, config, database, config.BJS)
+        self.start_date = '1970-01-01 20:00:00'
+        self.start_date = datetime.datetime.strptime(self.start_date, "%Y-%m-%d %H:%M:%S")
 
     def getArticleInfo(self, link):
-        html = self.openUrl(link)
+        html = self.openSpecialUrl(link)
         if html is None:
             return None
 
-        soup = BeautifulSoup(html, "html.parser")
-        body = soup.select("div.panel-body")
-        return body[0].select("div.pull-left")
+        result = html
+        return result['resultList']
+
+    def openSpecialUrl(self, url):
+        try:
+            response = requests.get(url, headers=self.config.http_header)
+            response.raise_for_status()
+        except requests.RequestException as e:
+            self.logger.exception(e)
+            return None
+        else:
+            result = response.json()
+            return result
+
 
     def getArticleContent(self, link):
-        html = self.openUrl(link)
+        html = self.openSpecialUrl(link)
         if html is None:
             return None, None
 
-        soup = BeautifulSoup(html, "html.parser")
-
-        # obtain news date time
-        t = soup.select('div.panel-heading')
-        if not t:
-            return None, None
-        t = t[0].select("span.ng-binding")
-        if not t:
-            return None, None
-        t = t[0].text
-        t = datetime.datetime.strptime(t.strip(), '%Y-%m-%d %H:%M:%S')
-
-        # remove redundant information
-        content = soup.select("div.panel-body")
-        if not content:
-            return None, None
-        content = content[0]
-
-        content = str(content)
-        return t, content
+        result = html
+        time_delta = datetime.timedelta(milliseconds=result['date'])
+        t = self.start_date + time_delta
+        now = datetime.datetime.now()
+        if t > now:
+            t = now
+        return t, result['content'].encode('utf-8')
 
     def getArticleTitleAndLink(self, articleInfo):
-        title = articleInfo.a.text
-        link = self.config.website[self.website_code]['domain'] + articleInfo.a['href']
+        title = articleInfo['title']
+        link = self.config.website[self.website_code]['link'][0] + articleInfo['_id']
         return title, link
 
 if __name__ == "__main__":

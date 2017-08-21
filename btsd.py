@@ -40,7 +40,7 @@ class BTSDSpider(Spider):
         if html is None:
             return None, None
 
-        soup = BeautifulSoup(html, "html.parser")
+        soup = BeautifulSoup(html.encode('ISO-8859-1'), "html.parser")
 
         # obtain news date time
         t = soup.select('div.header')

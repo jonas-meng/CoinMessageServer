@@ -7,19 +7,34 @@ from spider import Spider
 from sender import Sender
 from database import Database
 
+import requests
+
 import datetime
 
 class BTSDSpider(Spider):
+    headers = {'content-type': 'application/json',
+               'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:22.0) Gecko/20100101 Firefox/22.0'}
     def __init__(self, config, database):
         Spider.__init__(self, config, database, config.BTSD)
 
     def getArticleInfo(self, link):
-        html = self.openUrl(link)
-        if html is None:
+        notice = self.openSpecialUrl(link)
+        if notice is None:
             return None
 
-        soup = BeautifulSoup(html, "html.parser")
-        return soup.select("li.shadow")
+        return notice
+
+    def openSpecialUrl(self, url):
+        try:
+            response = requests.post('http://www.btc38.com/company_notices.html/../newsInfo.php?n=0.5',
+                                     data={'target': 1, 'page': 1}, headers=self.headers)
+            response.raise_for_status()
+        except requests.RequestException as e:
+            self.logger.exception(e)
+            return None
+        else:
+            result = response.json()
+            return result['notice']
 
     def getArticleContent(self, link):
         html = self.openUrl(link)
@@ -45,8 +60,9 @@ class BTSDSpider(Spider):
         return t, content
 
     def getArticleTitleAndLink(self, articleInfo):
-        title = articleInfo.a.span.text
-        link = articleInfo.a['href']
+        title = articleInfo['title']
+        link = articleInfo['url']
+        print title, link
         return title, link
 
 if __name__ == "__main__":

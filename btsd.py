@@ -26,7 +26,9 @@ class BTSDSpider(Spider):
 
     def openSpecialUrl(self, url):
         try:
-            response = requests.post(url, data={'target': 1, 'page': 1}, headers=self.headers)
+            response = requests.post(url, data={'target': 1, 'page': 1}, headers=self.headers,
+                                     timeout=(self.http_connect_time,
+                                              self.http_read_time))
             response.raise_for_status()
         except requests.RequestException as e:
             self.logger.exception(e)
@@ -40,6 +42,7 @@ class BTSDSpider(Spider):
         if html is None:
             return None, None
 
+        # use 'response.encoding' checking the encode format of response
         soup = BeautifulSoup(html.encode('ISO-8859-1'), "html.parser")
 
         # obtain news date time

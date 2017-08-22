@@ -29,13 +29,18 @@ class CoinVCSpider(Spider):
 
     def openSpecialUrl(self, url):
         try:
-            response = requests.get(url, headers=self.config.http_header)
+            response = requests.get(url, headers=self.config.http_header,
+                                    timeout=(self.http_connect_time,
+                                             self.http_read_time))
             response.raise_for_status()
         except requests.RequestException as e:
             self.logger.exception(e)
             return None
         else:
-            result = response.json()
+            try:
+                result = response.json()
+            except:
+                return None
             return result
 
 

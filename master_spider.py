@@ -17,13 +17,12 @@ from jubi import JubiSpider
 from bijiu import BijiuSpider
 from dahonghuo import DahonghuoSpider
 from b8w import B8Spider
-
-# coinvc, is also coded as 币交所, the spider is not usable
 from coinvc import CoinVCSpider
 
 import logger
 import time
 import random
+import datetime
 
 class MasterSpider:
     def __init__(self):
@@ -64,18 +63,16 @@ class MasterSpider:
 
     def run(self):
         while True:
+            time.sleep((random.random() * 180) + 60)
+            print datetime.datetime.now(), "invoke master spider"
             number_of_news = self.invokeSpider()
             if number_of_news > 0 :
                 self.logger.info(str(number_of_news) + " news discovered")
-            time.sleep((random.random() * 120) + 60)
 
     def invokeSpider(self):
         newPush = []
-        idx = 0
         for eachSpider in self.spiders:
-            if idx != 11:
-                newPush.extend(eachSpider.update())
-            idx = idx + 1
+            newPush.extend(eachSpider.update())
 
         if newPush:
             self.sender.send(newPush)

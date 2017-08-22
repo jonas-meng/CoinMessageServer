@@ -34,8 +34,12 @@ class BTSDSpider(Spider):
             self.logger.exception(e)
             return None
         else:
-            result = response.json()
-            return result['notice']
+            try:
+                result = response.json()
+            except:
+                return None
+            else:
+                return result['notice']
 
     def getArticleContent(self, link):
         html = self.openUrl(link)

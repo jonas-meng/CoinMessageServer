@@ -41,7 +41,8 @@ class CoinVCSpider(Spider):
                 result = response.json()
             except:
                 return None
-            return result
+            else:
+                return result
 
 
     def getArticleContent(self, link):

@@ -8,6 +8,7 @@ import requests
 import logger
 import time
 import random
+import datetime
 
 class Spider:
 
@@ -48,6 +49,17 @@ class Spider:
             newPush.extend(self.updateDB(link))
         return newPush
 
+    def validateTime(self, article_time):
+        t = datetime.datetime.now()
+        allowed_time_delta_pos = datetime.timedelta(minutes=2)
+        allowed_time_delta_neg = datetime.timedelta(minutes=-2)
+        real_time_delta = t - article_time
+        if real_time_delta < allowed_time_delta_pos \
+                and real_time_delta > allowed_time_delta_neg:
+            return article_time
+        else:
+            return t
+
     def updateDB(self, link):
         oldArticles = self.database.getNewsCollection()
 
@@ -70,8 +82,9 @@ class Spider:
                 time.sleep(random.random() * 3)
 
                 formatedTime, content = self.getArticleContent(link)
-                if content is None:
+                if content is None or formatedTime is None:
                     continue
+                formatedTime = self.validateTime(formatedTime)
 
                 msg = self.config.website[self.website_code]['jpush_code'] + " - new article - " + link
                 self.logger.info(msg)

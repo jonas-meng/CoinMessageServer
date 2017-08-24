@@ -9,6 +9,8 @@ import redis
 
 from config import Config
 from database import Database
+from jpusher import JPusher
+from wechat_pusher import WechatPusher
 
 pool = redis.ConnectionPool(host='localhost', port=6379)
 
@@ -21,10 +23,21 @@ class NewsPusher:
         self.appKey = credential['appKey'].encode('utf-8')
         self.master_secret = credential['master_secret'].encode('utf-8')
 
+        wechat_credential = database.getWechatCredential().find_one({})
+        self.app_id = wechat_credential['app_id']
+        self.app_secret = wechat_credential['app_secret']
+
+        self.pusher_list = [
+            JPusher(config, self.app_key, self.master_secret),
+            WechatPusher(config, self.app_id, self.app_secret, redis.Redis(connection_pool=pool))
+        ]
+
     def cleanRedis(self, code):
         r = redis.Redis(connection_pool=pool)
         website_identity = 1 << code
         for key in r.keys():
+            if key == 'wechat_access_token' or key == 'wechat_expire_time':
+                continue
             identity = int(key)
             if identity & website_identity:
                 r.delete(identity)
@@ -32,8 +45,6 @@ class NewsPusher:
     def callback(self, ch, method, properties, body):
         links = json.loads(body)
         news = self.database.getNewsCollection()
-
-        _jpush = jpush.JPush(self.appKey, self.master_secret)
 
         for link in links:
             article = news.find_one({'link': link})
@@ -43,22 +54,10 @@ class NewsPusher:
             # update outdated cache
             self.cleanRedis(article['code'])
 
-            pusher = _jpush.create_push()
-            pusher.audience = jpush.audience(jpush.tag(self.config.website[article['code']]['jpush_code']))
-            pusher.platform = jpush.all_
-            pusher.notification = jpush.notification(alert=article['title'])
-            self.logger.info("PUSH - " + self.config.website[article['code']]['jpush_code'] + " - " + link)
+            for pusher in self.pusher_list:
+                pusher.push(article)
 
-            try:
-                response = pusher.send()
-            except jpush.common.Unauthorized:
-                raise jpush.common.Unauthorized("Unauthorized")
-            except jpush.common.APIConnectionException:
-                raise jpush.common.APIConnectionException("conn")
-            except jpush.common.JPushFailure:
-                print ("JPushFailure")
-            except:
-                print ("Exception")
+            print article['title'], article['link']
 
         ch.basic_ack(delivery_tag=method.delivery_tag)
 

@@ -16,3 +16,8 @@ class Database:
         conn = MongoClient(self.config.dbAddress, self.config.dbPort)
         db = conn.jpush
         return db.credential
+
+    def getWechatCredential(self):
+        conn = MongoClient(self.config.dbAddress, self.config.dbPort)
+        db = conn.wechat
+        return db.credential

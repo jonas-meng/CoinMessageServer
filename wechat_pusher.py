@@ -87,11 +87,18 @@ class WechatPusher:
         self.next_openid = result['next_openid']
         return result['data']['openid']
 
+    def data_generate(self, article):
+        data = {
+            'platform' : {'value': self.config.website[article['code']]['name'].encode('utf-8')},
+            'title' : {'value': article['title'].encode('utf-8')},
+            'time' : {'value': article['time'].strftime("%Y-%m-%d %H:%M:%S").encode('utf-8')},
+            'link' : {'value':''}
+        }
+        return data
+
     def push(self, article):
-        platform = {'value': self.config.website[article['code']]['name'].encode('utf-8')}
-        title = {'value': article['title'].encode('utf-8')}
-        a_time = {'value': str(article['time']).encode('utf-8')}
-        link = {'value': article['link'].encode('utf-8')}
+        self.info_push_template['url'] = article['link'].encode('utf-8')
+        data = self.data_generate(article)
 
         access_token = self.obtain_access_token()
 
@@ -108,10 +115,7 @@ class WechatPusher:
                 if not user_list:
                     break
 
-            self.info_push_template['data']['platform'] = platform
-            self.info_push_template['data']['title'] = title
-            self.info_push_template['data']['time'] = a_time
-            self.info_push_template['data']['link'] = link
+            self.info_push_template['data'] = data
 
             for openid in user_list:
                 self.info_push_template['touser'] = openid.encode('utf-8')

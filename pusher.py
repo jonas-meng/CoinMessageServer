@@ -20,12 +20,12 @@ class NewsPusher:
         self.logger = logger.getLoggerFC('pusher', config.pusher_log)
         self.database = database
         credential = database.getJpushCredential().find_one({})
-        self.appKey = credential['appKey'].encode('utf-8')
+        self.app_key = credential['appKey'].encode('utf-8')
         self.master_secret = credential['master_secret'].encode('utf-8')
 
         wechat_credential = database.getWechatCredential().find_one({})
-        self.app_id = wechat_credential['app_id']
-        self.app_secret = wechat_credential['app_secret']
+        self.app_id = wechat_credential['app_id'].encode('utf-8')
+        self.app_secret = wechat_credential['app_secret'].encode('utf-8')
 
         self.pusher_list = [
             JPusher(config, self.app_key, self.master_secret),

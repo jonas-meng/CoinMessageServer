@@ -2,9 +2,10 @@
 # -*- coding:utf-8 -*-
 
 import requests
-import json
 import datetime
 import time
+
+from multiprocessing import Pool
 
 class WechatPusher:
 
@@ -18,14 +19,18 @@ class WechatPusher:
                                   % (self.app_id, self.app_secret)
         self.get_user_list_query = 'https://api.weixin.qq.com/cgi-bin/user/get?access_token=%s&next_openid=%s'
         self.next_openid = ''
-        self.info_push_query = 'https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=%s'
-        self.template_id = 'XSLGMu3N8kAm9LH5cahSxpO0LoXCEiHFfIEgY4tslqY'
-        self.info_push_template = {"touser": "",
-                              "template_id": self.template_id,
-                              "url": "",
-                              "miniprogram": "",
-                              "data": {}
-                              }
+
+    def request_access_token(self):
+        response = self.request_get(self.access_token_query)
+        if not response:
+            return None, None
+
+        result = response.json()
+        access_token = result.get('access_token')
+        expires_in = result.get('expires_in')
+        if not access_token:
+            return None, None
+        return access_token, expires_in
 
     def obtain_access_token(self):
 
@@ -34,18 +39,17 @@ class WechatPusher:
             and self.validateTime(self.redis_cache.get('wechat_expire_time'))):
            return self.redis_cache.get('wechat_access_token')
         else:
-            response = self.request_get(self.access_token_query)
-            if not response:
-                return None
-
-            result = response.json()
-            access_token, expires_in = result['access_token'], result['expires_in']
+            access_token, expires_in = self.request_access_token()
             if not access_token:
-                return None
-            else:
-                self.redis_cache.set('wechat_access_token', access_token)
-                self.redis_cache.set('wechat_expire_time', self.get_expire_time(expires_in))
-                return access_token
+                # try again after 3 second
+                time.sleep(3)
+                access_token, expires_in = self.request_access_token()
+                if not access_token:
+                    return None
+
+            self.redis_cache.set('wechat_access_token', access_token)
+            self.redis_cache.set('wechat_expire_time', self.get_expire_time(expires_in))
+            return access_token
 
     def get_expire_time(self, expires_in):
         # 60 secs for padding
@@ -77,53 +81,70 @@ class WechatPusher:
         expire_time = datetime.datetime.strptime(expire_time, '%Y-%m-%d %H:%M:%S.%f')
         return now < expire_time
 
-    def get_user_list(self, access_token, next_openid):
+    def request_user_list(self, access_token, next_openid):
         query = self.get_user_list_query % (access_token, next_openid)
         response = self.request_get(query)
         if not response:
             return []
 
         result = response.json()
-        self.next_openid = result['next_openid']
-        return result['data']['openid']
+        data = result.get('data')
+        if not data:
+            return []
+
+        openid_list = data.get('openid')
+        if not openid_list:
+            return []
+        else:
+            self.next_openid = result.get('next_openid')
+            return  openid_list
+
+    def obtain_user_list(self, access_token, next_openid):
+        user_list = self.request_user_list(access_token, self.next_openid)
+        if not user_list:
+            # sleep 3 seconds and try again
+            time.sleep(3)
+            user_list = self.request_user_list(access_token, self.next_openid)
+            if not user_list:
+                return None
+        return user_list
 
     def data_generate(self, article):
-        data = {
-            'platform' : {'value': self.config.website[article['code']]['name'].encode('utf-8')},
-            'title' : {'value': article['title'].encode('utf-8')},
-            'time' : {'value': article['time'].strftime("%Y-%m-%d %H:%M:%S").encode('utf-8')},
-            'link' : {'value':''}
-        }
-        return data
+        return {}
+
+    def get_post_query(self, access_toekn):
+        return {}
+
+    def get_post_data(self, openid):
+        return '{}'
+
+    def send_post_request(self, query, data):
+        response = self.request_post(query=query, data=data)
+        if not response:
+            print 'Failed Wechat Push'
+        else:
+            result = response.json()
+            # error code returned, indicating information push failure
+            if result.get('errcode'):
+                print result
 
     def push(self, article):
-        self.info_push_template['url'] = article['link'].encode('utf-8')
-        data = self.data_generate(article)
-
         access_token = self.obtain_access_token()
-
         if not access_token:
             return None
 
-        info_push_query = self.info_push_query % access_token
         while True:
-            user_list = self.get_user_list(access_token, self.next_openid)
+            user_list = self.obtain_user_list(access_token, self.next_openid)
             if not user_list:
-                # sleep 5 seconds and try again
-                time.sleep(5)
-                user_list = self.get_user_list(access_token, self.next_openid)
-                if not user_list:
-                    break
+                break
 
-            self.info_push_template['data'] = data
+            self.data_generate(article)
 
             for openid in user_list:
-                self.info_push_template['touser'] = openid.encode('utf-8')
-                info_push = json.dumps(self.info_push_template, ensure_ascii=False)
+                query = self.get_post_query(access_token)
+                data = self.get_post_data(openid)
 
-                response = self.request_post(info_push_query, data=info_push)
-                if not response:
-                    print 'Failed Wechat Push'
+                self.send_post_request(query, data)
 
             # stop when current user list is the last one
             if user_list[-1] == self.next_openid:

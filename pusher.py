@@ -10,7 +10,7 @@ import redis
 from config import Config
 from database import Database
 from jpusher import JPusher
-from wechat_pusher import WechatPusher
+from wechat_template_pusher import WechatTemplatePusher
 
 pool = redis.ConnectionPool(host='localhost', port=6379)
 
@@ -29,7 +29,7 @@ class NewsPusher:
 
         self.pusher_list = [
             JPusher(config, self.app_key, self.master_secret),
-            WechatPusher(config, self.app_id, self.app_secret, redis.Redis(connection_pool=pool))
+            WechatTemplatePusher(config, self.app_id, self.app_secret, redis.Redis(connection_pool=pool))
         ]
 
     def cleanRedis(self, code):

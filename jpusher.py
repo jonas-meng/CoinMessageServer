@@ -16,11 +16,9 @@ class JPusher:
         pusher.audience = jpush.audience(jpush.tag(self.config.website[article['code']]['jpush_code']))
         pusher.platform = jpush.all_
         pusher.notification = jpush.notification(alert=article['title'])
+        pusher.options = {'apns_production': True}
 
         try:
-            response = pusher.send()
-            # send for IOS
-            pusher.options = {'apns_production': False}
             response = pusher.send()
         except jpush.common.Unauthorized:
             raise jpush.common.Unauthorized("Unauthorized")

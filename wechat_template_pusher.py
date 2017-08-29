@@ -6,6 +6,7 @@ from config import Config
 import json
 import redis
 import datetime
+import time
 
 class WechatTemplatePusher(WechatPusher):
     def __init__(self, config, app_id, app_secret, r):
@@ -29,7 +30,14 @@ class WechatTemplatePusher(WechatPusher):
             'keyword3' : {'value': article['time'].strftime("%Y-%m-%d %H:%M:%S").encode('utf-8')},
             'remark' : {'value': remark.encode('utf-8')}
         }
-        self.info_template['url'] = article['link'].encode('utf-8')
+        if article['code'] != 11:
+            self.info_template['url'] = article['link'].encode('utf-8')
+        else:
+            # https://api.coinvc.com/api/v2/getNews/59a117ed5b2fec581f1520db
+            # https://www.coinvc.com/news/59a117ed5b2fec581f1520db
+            link = article['link'].encode('utf-8')
+            self.info_template['url'] = 'https://www.coinvc.com/news/' + link.split('/')[-1]
+            self.info_template['url'] = self.info_template['url'].encode('utf-8')
 
     def get_post_data(self, openid):
         self.info_template['touser'] = openid.encode('utf-8')

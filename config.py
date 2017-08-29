@@ -144,6 +144,6 @@ class Config:
             "name": u"币8网",
             "logo": u"https://www.b8wang.com/images/thanksgad_03.png",
             "link": [u'https://www.b8wang.com/news'],
-            "domain": u'https://www.b8wang.com/',
+            "domain": u'https://www.b8wang.com',
         },
     ]

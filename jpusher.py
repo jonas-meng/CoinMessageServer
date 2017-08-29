@@ -9,7 +9,7 @@ class JPusher:
         self.appKey = appKey
         self.master_secret = master_secret
 
-    def push(self, article):
+    def push(self, article, pool):
         _jpush = jpush.JPush(self.appKey, self.master_secret)
 
         pusher = _jpush.create_push()

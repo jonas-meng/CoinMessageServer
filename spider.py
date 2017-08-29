@@ -51,8 +51,8 @@ class Spider:
 
     def validateTime(self, article_time):
         t = datetime.datetime.now()
-        allowed_time_delta_pos = datetime.timedelta(minutes=2)
-        allowed_time_delta_neg = datetime.timedelta(minutes=-2)
+        allowed_time_delta_pos = datetime.timedelta(minutes=4)
+        allowed_time_delta_neg = datetime.timedelta(minutes=-4)
         real_time_delta = t - article_time
         if real_time_delta < allowed_time_delta_pos \
                 and real_time_delta > allowed_time_delta_neg:

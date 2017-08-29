@@ -7,6 +7,26 @@ import time
 
 from multiprocessing import Pool
 
+def request_post(query, data):
+    try:
+        response = requests.post(query, data=data)
+        response.raise_for_status()
+    except requests.RequestException as e:
+        return None
+    else:
+        return response
+
+def send_post_request(query, data):
+    response = request_post(query=query, data=data)
+    if not response:
+        print 'Failed Wechat Push'
+    else:
+        result = response.json()
+        # error code returned, indicating information push failure
+        if result.get('errcode'):
+            print result
+    print 'request finished'
+
 class WechatPusher:
 
     def __init__(self, config, app_id, app_secret, r):
@@ -33,7 +53,6 @@ class WechatPusher:
         return access_token, expires_in
 
     def obtain_access_token(self):
-
         if (self.redis_cache.exists('wechat_access_token')
             and self.redis_cache.exists('wechat_expire_time')
             and self.validateTime(self.redis_cache.get('wechat_expire_time'))):
@@ -61,15 +80,6 @@ class WechatPusher:
     def request_get(self, query):
         try:
             response = requests.get(query)
-            response.raise_for_status()
-        except requests.RequestException as e:
-            return None
-        else:
-            return response
-
-    def request_post(self, query, data):
-        try:
-            response = requests.post(query, data=data)
             response.raise_for_status()
         except requests.RequestException as e:
             return None
@@ -118,17 +128,7 @@ class WechatPusher:
     def get_post_data(self, openid):
         return '{}'
 
-    def send_post_request(self, query, data):
-        response = self.request_post(query=query, data=data)
-        if not response:
-            print 'Failed Wechat Push'
-        else:
-            result = response.json()
-            # error code returned, indicating information push failure
-            if result.get('errcode'):
-                print result
-
-    def push(self, article):
+    def push(self, article, pool):
         access_token = self.obtain_access_token()
         if not access_token:
             return None
@@ -138,13 +138,16 @@ class WechatPusher:
             if not user_list:
                 break
 
+            print ('total user %d' % len(user_list))
+
             self.data_generate(article)
 
             for openid in user_list:
                 query = self.get_post_query(access_token)
                 data = self.get_post_data(openid)
+                pool.apply_async(send_post_request, args=(query, data))
 
-                self.send_post_request(query, data)
+            print 'wechat process distributed'
 
             # stop when current user list is the last one
             if user_list[-1] == self.next_openid:

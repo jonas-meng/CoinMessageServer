@@ -6,13 +6,17 @@ import jpush
 import json
 import logger
 import redis
+import datetime
 
+from multiprocessing import Pool
 from config import Config
 from database import Database
 from jpusher import JPusher
 from wechat_template_pusher import WechatTemplatePusher
 
 pool = redis.ConnectionPool(host='localhost', port=6379)
+
+process_pool = Pool()
 
 class NewsPusher:
     def __init__(self, config, database):
@@ -28,7 +32,7 @@ class NewsPusher:
         self.app_secret = wechat_credential['app_secret'].encode('utf-8')
 
         self.pusher_list = [
-            JPusher(config, self.app_key, self.master_secret),
+            #JPusher(config, self.app_key, self.master_secret),
             WechatTemplatePusher(config, self.app_id, self.app_secret, redis.Redis(connection_pool=pool))
         ]
 
@@ -54,15 +58,14 @@ class NewsPusher:
             # update outdated cache
             self.cleanRedis(article['code'])
 
+            print datetime.datetime.now(), article['title'], article['link']
             for pusher in self.pusher_list:
-                pusher.push(article)
-
-            print article['title'], article['link']
+                pusher.push(article, pool=process_pool)
 
         ch.basic_ack(delivery_tag=method.delivery_tag)
 
     def receive(self):
-        connection = pika.BlockingConnection(pika.ConnectionParameters(host='localhost'))
+        connection = pika.BlockingConnection(pika.ConnectionParameters(host='localhost',  heartbeat_interval=0))
         channel = connection.channel()
 
         channel.queue_declare(queue = self.config.rabbit_push_news_queue)

@@ -8,6 +8,8 @@ import redis
 import datetime
 import time
 
+from multiprocessing import Pool
+
 class WechatTemplatePusher(WechatPusher):
     def __init__(self, config, app_id, app_secret, r):
         WechatPusher.__init__(self, config, app_id, app_secret, r)
@@ -21,14 +23,14 @@ class WechatTemplatePusher(WechatPusher):
                               }
 
     def data_generate(self, article):
-        remark = u'感谢关注跟进'
+        remark = u'\n>>点击查看官网详情<<'
         first = (u'项目平台：%s' % self.config.website[article['code']]['name'])
         self.info_template['data'] = {
-            'first' : {'value': first.encode('utf-8')},
+            'first' : {'value': first.encode('utf-8'), 'color':'#173177'},
             'keyword1' : {'value': 'BIZHIDAO'},
-            'keyword2' : {'value': article['title'].encode('utf-8')},
-            'keyword3' : {'value': article['time'].strftime("%Y-%m-%d %H:%M:%S").encode('utf-8')},
-            'remark' : {'value': remark.encode('utf-8')}
+            'keyword2' : {'value': article['title'].encode('utf-8'), 'color':'#173177'},
+            'keyword3' : {'value': article['time'].strftime("%Y-%m-%d %H:%M:%S").encode('utf-8'), 'color':'#173177'},
+            'remark' : {'value': remark.encode('utf-8'), 'color':'#173177'}
         }
         if article['code'] != 11:
             self.info_template['url'] = article['link'].encode('utf-8')
@@ -45,6 +47,12 @@ class WechatTemplatePusher(WechatPusher):
 
     def get_post_query(self, access_token):
         return (self.template_query % access_token)
+
+    def get_target_user_list(self, access_token):
+        all_user_list = self.get_all_user(access_token)
+        white_list_user = self.get_tagged_user_list(access_token, self.config.white_list_code)
+        non_white_list_user = all_user_list - white_list_user
+        return non_white_list_user
 
 if __name__ == "__main__":
     config = Config()

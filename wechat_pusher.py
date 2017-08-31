@@ -4,6 +4,8 @@
 import requests
 import datetime
 import time
+import redis
+import json
 
 from multiprocessing import Pool
 
@@ -16,7 +18,7 @@ def request_post(query, data):
     else:
         return response
 
-def send_post_request(query, data):
+def send_post_request(query, data, openid):
     response = request_post(query=query, data=data)
     if not response:
         print 'Failed Wechat Push'
@@ -25,7 +27,7 @@ def send_post_request(query, data):
         # error code returned, indicating information push failure
         if result.get('errcode'):
             print result
-    print 'request finished'
+    print ('send data to %s user' % openid)
 
 class WechatPusher:
 
@@ -39,6 +41,7 @@ class WechatPusher:
                                   % (self.app_id, self.app_secret)
         self.get_user_list_query = 'https://api.weixin.qq.com/cgi-bin/user/get?access_token=%s&next_openid=%s'
         self.next_openid = ''
+        self.get_user_with_tag_query = 'https://api.weixin.qq.com/cgi-bin/user/tag/get?access_token=%s'
 
     def request_access_token(self):
         response = self.request_get(self.access_token_query)
@@ -53,10 +56,11 @@ class WechatPusher:
         return access_token, expires_in
 
     def obtain_access_token(self):
-        if (self.redis_cache.exists('wechat_access_token')
-            and self.redis_cache.exists('wechat_expire_time')
-            and self.validateTime(self.redis_cache.get('wechat_expire_time'))):
-           return self.redis_cache.get('wechat_access_token')
+        #if (self.redis_cache.exists('wechat_access_token')
+        #    and self.redis_cache.exists('wechat_expire_time')
+        #    and self.validateTime(self.redis_cache.get('wechat_expire_time'))):
+        if False:
+            return self.redis_cache.get('wechat_access_token')
         else:
             access_token, expires_in = self.request_access_token()
             if not access_token:
@@ -71,8 +75,8 @@ class WechatPusher:
             return access_token
 
     def get_expire_time(self, expires_in):
-        # 60 secs for padding
-        expires_in = expires_in - 60
+        # 600 secs for padding
+        expires_in = expires_in - 1200
         now = datetime.datetime.now()
         time_delta = datetime.timedelta(seconds=expires_in)
         return now + time_delta
@@ -109,6 +113,26 @@ class WechatPusher:
             self.next_openid = result.get('next_openid')
             return  openid_list
 
+    def request_tagged_user(self, access_token, next_openid, tag):
+        query = self.get_user_with_tag_query % access_token
+        # white list tag id 101
+        data = { "tagid" : tag, "next_openid": next_openid }
+        response = request_post(query, json.dumps(data))
+        if not response:
+            return []
+
+        result = response.json()
+        data = result.get('data')
+        if not data:
+            return []
+
+        openid_list = data.get('openid')
+        if not openid_list:
+            return []
+        else:
+            self.next_openid = result.get('next_openid')
+            return openid_list
+
     def obtain_user_list(self, access_token, next_openid):
         user_list = self.request_user_list(access_token, self.next_openid)
         if not user_list:
@@ -128,32 +152,56 @@ class WechatPusher:
     def get_post_data(self, openid):
         return '{}'
 
-    def push(self, article, pool):
-        access_token = self.obtain_access_token()
-        if not access_token:
-            return None
+    def get_target_user_list(self, access_token):
+        return {}
 
+    def get_tagged_user_list(self, access_token, tag):
+        tagged_user_list = set()
+        self.next_openid = ''
+        # obtain user white list
+        while True:
+            user_list = self.request_tagged_user(access_token, self.next_openid, tag)
+            if not user_list:
+                break
+            tagged_user_list.update(user_list)
+
+            if user_list[-1] == self.next_openid:
+                self.next_openid = ''
+                break
+        return tagged_user_list
+
+    def get_all_user(self, access_token):
+        all_user_list = set()
+        self.next_openid = ''
+        # obtain all user
         while True:
             user_list = self.obtain_user_list(access_token, self.next_openid)
             if not user_list:
                 break
-
-            print ('total user %d' % len(user_list))
-
-            self.data_generate(article)
-
-            for openid in user_list:
-                query = self.get_post_query(access_token)
-                data = self.get_post_data(openid)
-                pool.apply_async(send_post_request, args=(query, data))
-
-            print 'wechat process distributed'
+            all_user_list.update(user_list)
 
             # stop when current user list is the last one
             if user_list[-1] == self.next_openid:
                 # reset to initial
                 self.next_openid = ''
                 break
+        return all_user_list
+
+    def push(self, article, pool):
+        access_token = self.obtain_access_token()
+        if not access_token:
+            return None
+
+        target_user_list = self.get_target_user_list(access_token)
+
+        self.data_generate(article)
+
+        for openid in target_user_list:
+            query = self.get_post_query(access_token)
+            data = self.get_post_data(openid)
+            pool.apply_async(send_post_request, args=(query, data, openid))
+
 
 if __name__ == "__main__":
     print 'wechat pusher'
+

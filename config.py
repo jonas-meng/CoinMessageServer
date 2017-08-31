@@ -6,6 +6,9 @@ class Config:
     min_time_interval = 0.5
     max_time_interval = 2
 
+    # wechat tag
+    white_list_code = 101
+
     # log address
     master_spider_log = 'log/master_spider.log'
     spider_log = 'log/spider.log'

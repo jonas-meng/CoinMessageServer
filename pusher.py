@@ -13,6 +13,7 @@ from config import Config
 from database import Database
 from jpusher import JPusher
 from wechat_template_pusher import WechatTemplatePusher
+from wechat_custom_service_pusher import WechatCustomServicePusher
 
 pool = redis.ConnectionPool(host='localhost', port=6379)
 
@@ -32,8 +33,9 @@ class NewsPusher:
         self.app_secret = wechat_credential['app_secret'].encode('utf-8')
 
         self.pusher_list = [
-            #JPusher(config, self.app_key, self.master_secret),
-            WechatTemplatePusher(config, self.app_id, self.app_secret, redis.Redis(connection_pool=pool))
+            JPusher(config, self.app_key, self.master_secret),
+            WechatTemplatePusher(config, self.app_id, self.app_secret, redis.Redis(connection_pool=pool)),
+            WechatCustomServicePusher(config, self.app_id, self.app_secret, redis.Redis(connection_pool=pool))
         ]
 
     def cleanRedis(self, code):
@@ -57,6 +59,11 @@ class NewsPusher:
 
             # update outdated cache
             self.cleanRedis(article['code'])
+
+            msg = '%s %s %s' % (str(datetime.datetime.now()),
+                                article['title'].encode('utf-8'),
+                                article['link'].encode('utf-8'))
+            self.logger.info(msg)
 
             print datetime.datetime.now(), article['title'], article['link']
             for pusher in self.pusher_list:

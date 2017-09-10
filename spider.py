@@ -72,7 +72,9 @@ class Spider:
             # TEST ONLY
             #if (len(newArticles) > 0):
             #   continue
-            title, link = self.getArticleTitleAndLink(articleInfo)
+            #title, link = self.getArticleTitleAndLink(articleInfo)
+            title = "Clarification"
+            link = "https://www.bitfinex.com/posts/217"
             if not link:
                 continue
 
@@ -82,6 +84,7 @@ class Spider:
                 time.sleep(random.random() * 3)
 
                 formatedTime, content = self.getArticleContent(link)
+                break
                 if content is None or formatedTime is None:
                     continue
                 formatedTime = self.validateTime(formatedTime)

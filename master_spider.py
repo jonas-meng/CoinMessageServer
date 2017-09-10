@@ -49,16 +49,16 @@ class MasterSpider:
                            database=self.database),
             YuanbaoSpider(config=self.config,
                        database=self.database),
-            JubiSpider(config=self.config,
-                          database=self.database),
+            #JubiSpider(config=self.config,
+            #              database=self.database),
             BijiuSpider(config=self.config,
                        database=self.database),
             CoinVCSpider(config=self.config,
                         database=self.database),
-            DahonghuoSpider(config=self.config,
-                         database=self.database),
-            B8Spider(config=self.config,
-                            database=self.database),
+            #DahonghuoSpider(config=self.config,
+            #             database=self.database),
+            #B8Spider(config=self.config,
+            #                database=self.database),
         ]
 
     def run(self):

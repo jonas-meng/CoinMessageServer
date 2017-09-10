@@ -27,7 +27,7 @@ def send_post_request(query, data, openid):
         # error code returned, indicating information push failure
         if result.get('errcode'):
             print result
-    print ('send data to %s user' % openid)
+    print datetime.datetime.now(), ('send data to %s user' % openid)
 
 class WechatPusher:
 

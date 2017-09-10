@@ -47,6 +47,7 @@ class Config:
     BJS = 11
     DHH = 12
     B8 = 13
+    BITFINEX = 14
 
     # website information
     website = [
@@ -148,5 +149,12 @@ class Config:
             "logo": u"https://www.b8wang.com/images/thanksgad_03.png",
             "link": [u'https://www.b8wang.com/news'],
             "domain": u'https://www.b8wang.com',
+        },
+        {
+            "jpush_code": u"BITFINEX",
+            "name": u"Bitfinex",
+            "logo": u"https://www.b8wang.com/images/thanksgad_03.png",
+            "link": [u'https://www.bitfinex.com/posts'],
+            "domain": u'https://www.bitfinex.com',
         },
     ]

@@ -6,12 +6,13 @@ from config import Config
 from spider import Spider
 from sender import Sender
 from database import Database
+from translate_helper import translate
 
 import datetime
 
-class YuanbaoSpider(Spider):
+class BitfinexSpider(Spider):
     def __init__(self, config, database):
-        Spider.__init__(self, config, database, config.YBW)
+        Spider.__init__(self, config, database, config.BITFINEX)
 
     def getArticleInfo(self, link):
         html = self.openUrl(link)
@@ -19,7 +20,7 @@ class YuanbaoSpider(Spider):
             return None
 
         soup = BeautifulSoup(html, "html.parser")
-        return soup.select("li.hideli")
+        return soup.select("#posts-page a.ajax")
 
     def getArticleContent(self, link):
         html = self.openUrl(link)
@@ -29,32 +30,29 @@ class YuanbaoSpider(Spider):
         soup = BeautifulSoup(html, "html.parser")
 
         # obtain news date time
-        t = soup.select('div.product.left.clearfix')
-        t = t[0].find("p")
-        if not t:
-            return None, None
-        t = t.text
-        t = datetime.datetime.strptime(t.strip(), '%Y-%m-%d %H:%M')
+        t = datetime.datetime.now()
 
         # remove redundant information
-        content = soup.select(".paragraph.paragraph_news")
+        content = soup.select("div.section")
         if not content:
             return None, None
         content = content[0]
 
         content = str(content)
+        print translate(content)
         return t, content
 
     def getArticleTitleAndLink(self, articleInfo):
-        title = articleInfo.a.text
-        title = title.split('\n')[-1].strip()
-        link = self.config.website[self.website_code]['domain'] +  articleInfo.a['href']
-        return title, link
+        title = articleInfo.text.strip()
+        link = self.config.website[self.website_code]['domain'] + articleInfo['href']
+        print title, link
+        #return title, link
+        return None, None
 
 if __name__ == "__main__":
     config = Config()
     sender = Sender(config)
     database = Database(config)
-    parser = YuanbaoSpider(config, database)
+    parser = BitfinexSpider(config, database)
     #sender.send(parser.update())
     parser.update()

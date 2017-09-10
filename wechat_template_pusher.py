@@ -49,10 +49,10 @@ class WechatTemplatePusher(WechatPusher):
         return (self.template_query % access_token)
 
     def get_target_user_list(self, access_token):
-        all_user_list = self.get_all_user(access_token)
+        #all_user_list = self.get_all_user(access_token)
         white_list_user = self.get_tagged_user_list(access_token, self.config.white_list_code)
-        non_white_list_user = all_user_list - white_list_user
-        return non_white_list_user
+        #non_white_list_user = all_user_list - white_list_user
+        return white_list_user
 
 if __name__ == "__main__":
     config = Config()

@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding:utf-8 -*-
 
-from bs4 import BeautifulSoup, Comment
+from bs4 import BeautifulSoup
 from config import Config
 from spider import Spider
 from sender import Sender
@@ -39,15 +39,13 @@ class BitfinexSpider(Spider):
         content = content[0]
 
         content = str(content)
-        print translate(content)
+        content = translate(content)
         return t, content
 
     def getArticleTitleAndLink(self, articleInfo):
         title = articleInfo.text.strip()
         link = self.config.website[self.website_code]['domain'] + articleInfo['href']
-        print title, link
-        #return title, link
-        return None, None
+        return title, link
 
 if __name__ == "__main__":
     config = Config()

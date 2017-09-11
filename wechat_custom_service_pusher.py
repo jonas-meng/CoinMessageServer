@@ -56,7 +56,7 @@ class WechatCustomServicePusher(WechatPusher):
 
     def get_target_user_list(self, access_token):
         all_user_list = self.get_all_user(access_token)
-        white_list_user = self.get_tagged_user_list(access_token, self.config.white_list_code)
+        white_list_user = self.get_tagged_user_list(access_token, self.config.white_list_tag)
         non_white_list_user = all_user_list - white_list_user
         return non_white_list_user
 

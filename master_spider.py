@@ -18,6 +18,7 @@ from bijiu import BijiuSpider
 from dahonghuo import DahonghuoSpider
 from b8w import B8Spider
 from coinvc import CoinVCSpider
+from bitfinex import BitfinexSpider
 
 import logger
 import time
@@ -61,6 +62,11 @@ class MasterSpider:
             #                database=self.database),
         ]
 
+        self.vip_spiders = [
+            BitfinexSpider(config=self.config,
+                           database=self.database)
+        ]
+
     def run(self):
         while True:
             time.sleep((random.random() * 120) + 120)
@@ -71,8 +77,12 @@ class MasterSpider:
 
     def invokeSpider(self):
         newPush = []
-        for eachSpider in self.spiders:
-            newPush.extend(eachSpider.update())
+        if not self.config.is_on_foreign_server:
+            for eachSpider in self.spiders:
+                newPush.extend(eachSpider.update())
+        else:
+            for eachSpider in self.vip_spiders:
+                newPush.extend(eachSpider.update())
 
         if newPush:
             self.sender.send(newPush)

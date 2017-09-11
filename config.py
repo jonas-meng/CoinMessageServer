@@ -7,7 +7,15 @@ class Config:
     max_time_interval = 2
 
     # wechat tag
-    white_list_code = 101
+    white_list_tag = 101
+    test_tag = 100
+
+    # domestic server IP
+    domestic_server_ip = "http://0.0.0.0:3389"
+    domestic_pusher_url = domestic_server_ip + "/api/news"
+
+    # on foreign server
+    is_on_foreign_server = False
 
     # log address
     master_spider_log = 'log/master_spider.log'

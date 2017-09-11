@@ -1,22 +1,24 @@
 #!/usr/bin/python
 # -*- coding:utf-8 -*-
 
-from flask import Flask
+from flask import Flask, request
 from flask.ext import restful
 from flask.ext.restful import reqparse
 from config import Config
 from database import Database
+from sender import Sender
 
 import json
 import logging
 import redis
+import datetime
 
 app = Flask(__name__)
 api = restful.Api(app)
 config = Config()
 database = Database(config)
+app_sender = Sender(config)
 pool = redis.ConnectionPool(host='localhost', port=6379)
-
 
 # add log file handler
 file_handler = logging.FileHandler(config.server_log)
@@ -55,6 +57,32 @@ def getArticlesInJson(identity, website_codes, limit=10):
             r.set(key, json.dumps({"posts": result}, ensure_ascii=False))
     return r.get(key)
 
+def getSingleArticleInJson(url):
+    result = ""
+    r = redis.Redis(connection_pool=pool)
+    key = str(url)
+    if not r.exists(key):
+        articleInfoCollection = database.getNewsCollection()
+        cursor = articleInfoCollection.find_one({"link":url})
+        if cursor:
+            result = cursor['content'].encode('utf-8')
+            if not r.exists(key):
+                r.set(key, result, ex=3600)
+    return r.get(key)
+
+def storeArticleInDB(code, title, time, link,  content):
+    time = datetime.datetime.strptime(time, '%Y-%m-%d %H:%M:%S')
+    articleCollection = database.getNewsCollection()
+    if not articleCollection.find_one({'link':link}):
+        articleInfo = {"code": code,
+                       "title": title,
+                       "time": time,
+                       "link": link,
+                       "content": str(content)}
+
+        articleCollection.insert(articleInfo)
+        app_sender.send([link])
+
 def identity2code(identity):
     idx = 0
     website_codes = []
@@ -66,21 +94,40 @@ def identity2code(identity):
     return website_codes
 
 class Announcement(restful.Resource):
-
-    def parserRequest(self):
+    def parserGetRequest(self):
         parser = reqparse.RequestParser()
         parser.add_argument('identity', type=int)
         parser.add_argument('number', type=int)
         return parser.parse_args()
 
+    def parserPutRequest(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument('time')
+        parser.add_argument('title')
+        parser.add_argument('content')
+        return parser.parse_args()
+
     def get(self):
-        args = self.parserRequest()
+        args = self.parserGetRequest()
+        '''
         return getArticlesInJson(
             args['identity'],
             identity2code(args['identity']),
             args['number'])
+        '''
+        return getSingleArticleInJson(args['url'])
 
-api.add_resource(Announcement, '/api/getNews')
+    def put(self):
+        storeArticleInDB(
+            request.form.get('code'),
+            request.form.get('title'),
+            request.form.get('time'),
+            request.form.get('link'),
+            request.form.get('content'),
+        )
+        return 'Successful'
+
+api.add_resource(Announcement, '/api/news')
 
 if __name__ == '__main__':
     #app.run(debug=True)

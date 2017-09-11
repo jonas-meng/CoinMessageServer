@@ -14,6 +14,7 @@ from database import Database
 from jpusher import JPusher
 from wechat_template_pusher import WechatTemplatePusher
 from wechat_custom_service_pusher import WechatCustomServicePusher
+from foreign_pusher import FPusher
 
 pool = redis.ConnectionPool(host='localhost', port=6379)
 
@@ -34,8 +35,16 @@ class NewsPusher:
 
         self.pusher_list = [
             JPusher(config, self.app_key, self.master_secret),
-            WechatTemplatePusher(config, self.app_id, self.app_secret, redis.Redis(connection_pool=pool)),
+            WechatTemplatePusher(config, self.app_id, self.app_secret, redis.Redis(connection_pool=pool), self.config.white_list_tag),
             WechatCustomServicePusher(config, self.app_id, self.app_secret, redis.Redis(connection_pool=pool))
+        ]
+
+        self.foreign_pusher_list = [
+            FPusher(config)
+        ]
+
+        self.vip_pusher_list = [
+            WechatTemplatePusher(config, self.app_id, self.app_secret, redis.Redis(connection_pool=pool), self.config.test_tag),
         ]
 
     def cleanRedis(self, code):
@@ -60,14 +69,21 @@ class NewsPusher:
             # update outdated cache
             self.cleanRedis(article['code'])
 
-            msg = '%s %s %s' % (str(datetime.datetime.now()),
-                                article['title'].encode('utf-8'),
-                                article['link'].encode('utf-8'))
+            msg = '%s %s' % (article['title'].encode('utf-8'), article['link'].encode('utf-8'))
             self.logger.info(msg)
 
             print datetime.datetime.now(), article['title'], article['link']
-            for pusher in self.pusher_list:
-                pusher.push(article, pool=process_pool)
+            if not self.config.is_on_foreign_server:
+                if article['code'] < self.config.BITFINEX:
+                    for pusher in self.pusher_list:
+                        pusher.push(article, pool=process_pool)
+                else:
+                    # article pusher only for vip
+                    for pusher in self.vip_pusher_list:
+                        pusher.push(article, pool=process_pool)
+            else:
+                for pusher in self.foreign_pusher_list:
+                    pusher.push(article, pool=process_pool)
 
         ch.basic_ack(delivery_tag=method.delivery_tag)
 

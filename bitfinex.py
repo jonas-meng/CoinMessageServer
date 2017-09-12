@@ -38,7 +38,7 @@ class BitfinexSpider(Spider):
             return None, None
         content = content[0]
 
-        content = str(content)
+        content = content.text
         content = translate(content)
         return t, content
 

@@ -2,14 +2,15 @@
 # -*- coding:utf-8 -*-
 
 from googletrans import Translator
+from bs4 import UnicodeDammit
 
 translator = Translator()
 
 def translate(text, src='en', dest='zh-cn'):
     res = translator.translate(text, src=src, dest=dest)
-    translated_text = res.text.encode('utf-8')
+    translated_text = res.text
     prettified_translated_text = translated_text.replace('</ ', '</')
-    return prettified_translated_text
+    return prettified_translated_text.encode('utf-8')
 
 
 if __name__ == "__main__":

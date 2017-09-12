@@ -71,6 +71,7 @@ def getSingleArticleInJson(url):
     return r.get(key)
 
 def storeArticleInDB(code, title, time, link,  content):
+    code = int(code)
     time = datetime.datetime.strptime(time, '%Y-%m-%d %H:%M:%S')
     articleCollection = database.getNewsCollection()
     if not articleCollection.find_one({'link':link}):
@@ -78,7 +79,7 @@ def storeArticleInDB(code, title, time, link,  content):
                        "title": title,
                        "time": time,
                        "link": link,
-                       "content": str(content)}
+                       "content": content}
 
         articleCollection.insert(articleInfo)
         app_sender.send([link])

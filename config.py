@@ -11,7 +11,7 @@ class Config:
     test_tag = 100
 
     # domestic server IP
-    domestic_server_ip = "http://0.0.0.0:3389"
+    domestic_server_ip = "http://45.76.39.182:3389"
     domestic_pusher_url = domestic_server_ip + "/api/news"
 
     # on foreign server

@@ -11,7 +11,7 @@ class Config:
     test_tag = 100
 
     # domestic server IP
-    domestic_server_ip = "http://45.76.39.182:3389"
+    domestic_server_ip = "http://139.224.112.58:3389"
     domestic_pusher_url = domestic_server_ip + "/api/news"
 
     # on foreign server
@@ -56,6 +56,8 @@ class Config:
     DHH = 12
     B8 = 13
     BITFINEX = 14
+    KRAKEN = 15
+    BITSTAMP = 16
 
     # website information
     website = [
@@ -164,5 +166,19 @@ class Config:
             "logo": u"https://www.b8wang.com/images/thanksgad_03.png",
             "link": [u'https://www.bitfinex.com/posts'],
             "domain": u'https://www.bitfinex.com',
+        },
+        {
+            "jpush_code": u"KRAKEN",
+            "name": u"Kraken",
+            "logo": u"https://www.b8wang.com/images/thanksgad_03.png",
+            "link": [u'https://blog.kraken.com/'],
+            "domain": u'https://blog.kraken.com',
+        },
+        {
+            "jpush_code": u"BITSTAMP",
+            "name": u"Bitstamp",
+            "logo": u"https://www.b8wang.com/images/thanksgad_03.png",
+            "link": [u'https://www.bitstamp.net/news/'],
+            "domain": u'https://www.bitstamp.net/news',
         },
     ]

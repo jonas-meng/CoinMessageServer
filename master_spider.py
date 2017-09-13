@@ -19,6 +19,7 @@ from dahonghuo import DahonghuoSpider
 from b8w import B8Spider
 from coinvc import CoinVCSpider
 from bitfinex import BitfinexSpider
+from kraken import KrakenSpider
 
 import logger
 import time
@@ -64,7 +65,9 @@ class MasterSpider:
 
         self.vip_spiders = [
             BitfinexSpider(config=self.config,
-                           database=self.database)
+                           database=self.database),
+            KrakenSpider(config=self.config,
+                           database=self.database),
         ]
 
     def run(self):
@@ -74,6 +77,7 @@ class MasterSpider:
             number_of_news = self.invokeSpider()
             if number_of_news > 0 :
                 self.logger.info(str(number_of_news) + " news discovered")
+            #break
 
     def invokeSpider(self):
         newPush = []

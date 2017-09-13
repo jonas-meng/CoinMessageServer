@@ -31,8 +31,8 @@ app.logger.addHandler(file_handler)
 def output_json(data, code, headers=None):
     response = app.make_response(data)
     #json.dumps(data, ensure_ascii=False))
-    response.headers.extend(headers or {})
-    response.headers.set('Access-Control-Allow-Origin', '*')
+    response.headers.extend(headers or {'Content-type':'text/html; charset=utf-8'})
+    #response.headers.set('Access-Control-Allow-Origin', '*')
     return response
 
 def getArticlesInJson(identity, website_codes, limit=10):
@@ -65,10 +65,12 @@ def getSingleArticleInJson(url):
         articleInfoCollection = database.getNewsCollection()
         cursor = articleInfoCollection.find_one({"link":url})
         if cursor:
-            result = cursor['content'].encode('utf-8')
+            result = cursor['content']
             if not r.exists(key):
                 r.set(key, result, ex=3600)
-    return r.get(key)
+    res = (u'<!DOCTYPE html><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><html><body>{0}</body></html>'.format(
+        result.replace('\n', '<br/>')))
+    return res.encode('utf-8')
 
 def storeArticleInDB(code, title, time, link,  content):
     code = int(code)
@@ -82,7 +84,7 @@ def storeArticleInDB(code, title, time, link,  content):
                        "content": content}
 
         articleCollection.insert(articleInfo)
-        app_sender.send([link])
+    app_sender.send([link])
 
 def identity2code(identity):
     idx = 0
@@ -97,8 +99,9 @@ def identity2code(identity):
 class Announcement(restful.Resource):
     def parserGetRequest(self):
         parser = reqparse.RequestParser()
-        parser.add_argument('identity', type=int)
-        parser.add_argument('number', type=int)
+        #parser.add_argument('identity', type=int)
+        #parser.add_argument('number', type=int)
+        parser.add_argument('url')
         return parser.parse_args()
 
     def parserPutRequest(self):

@@ -23,6 +23,17 @@ class WechatTemplatePusher(WechatPusher):
                               }
         self.user_tag = user_tag
 
+    def set_data_url(self, article):
+        if article['code'] < self.config.BITFINEX:
+            if article['code'] != 11:
+                self.info_template['url'] = article['link']
+            else:
+                link = article['link'].encode('utf-8')
+                self.info_template['url'] = 'https://www.coinvc.com/news/' + link.split('/')[-1]
+        else:
+            self.info_template['url'] = ('http://bizhidao.org/api/news?url=%s' % article['link'])
+        self.info_template['url'] = self.info_template['url'].encode('utf-8')
+
     def data_generate(self, article):
         remark = u'\n>>点击查看官网详情<<'
         first = (u'项目平台：%s' % self.config.website[article['code']]['name'])
@@ -33,12 +44,7 @@ class WechatTemplatePusher(WechatPusher):
             'keyword3' : {'value': article['time'].strftime("%Y-%m-%d %H:%M:%S").encode('utf-8'), 'color':'#173177'},
             'remark' : {'value': remark.encode('utf-8'), 'color':'#173177'}
         }
-        if article['code'] != 11:
-            self.info_template['url'] = article['link'].encode('utf-8')
-        else:
-            link = article['link'].encode('utf-8')
-            self.info_template['url'] = 'https://www.coinvc.com/news/' + link.split('/')[-1]
-            self.info_template['url'] = self.info_template['url'].encode('utf-8')
+        self.set_data_url(article)
 
     def get_post_data(self, openid):
         self.info_template['touser'] = openid.encode('utf-8')

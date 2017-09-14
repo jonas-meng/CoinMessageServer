@@ -31,11 +31,11 @@ class WechatTemplatePusher(WechatPusher):
                 link = article['link'].encode('utf-8')
                 self.info_template['url'] = 'https://www.coinvc.com/news/' + link.split('/')[-1]
         else:
-            self.info_template['url'] = ('http://bizhidao.org/api/news?url=%s' % article['link'])
+            self.info_template['url'] = ('http://bizhidao.org:3389/api/news?url=%s' % article['link'])
         self.info_template['url'] = self.info_template['url'].encode('utf-8')
 
     def data_generate(self, article):
-        remark = u'\n>>点击查看官网详情<<'
+        remark = '\n' + article['content'][0:20] + u'\n...\n>>点击查看官网详情<<'
         first = (u'项目平台：%s' % self.config.website[article['code']]['name'])
         self.info_template['data'] = {
             'first' : {'value': first.encode('utf-8'), 'color':'#173177'},

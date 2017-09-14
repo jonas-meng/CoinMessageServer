@@ -39,7 +39,7 @@ class KrakenSpider(Spider):
         content = content[0]
 
         content = content.text
-        content = translate(content)
+        content = translate(content) + '\n' + content
         return t, content
 
     def getArticleTitleAndLink(self, articleInfo):

@@ -58,6 +58,8 @@ class Config:
     BITFINEX = 14
     KRAKEN = 15
     BITSTAMP = 16
+    POLONIEX = 17
+    LIQUI = 18
 
     # website information
     website = [
@@ -180,5 +182,21 @@ class Config:
             "logo": u"https://www.b8wang.com/images/thanksgad_03.png",
             "link": [u'https://www.bitstamp.net/news/'],
             "domain": u'https://www.bitstamp.net/news',
+        },
+        {
+            "jpush_code": u"POLONIEX",
+            "name": u"Poloniex Exchange",
+            "logo": u"https://www.b8wang.com/images/thanksgad_03.png",
+            "link": [],
+            "domain": u'',
+            "twitter_id": u'2288889440',
+        },
+        {
+            "jpush_code": u"LIQUI",
+            "name": u"Liqui",
+            "logo": u"https://www.b8wang.com/images/thanksgad_03.png",
+            "link": [],
+            "domain": u'',
+            "twitter_id": u'745560613808709632'
         },
     ]

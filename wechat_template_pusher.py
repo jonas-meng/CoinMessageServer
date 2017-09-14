@@ -35,7 +35,11 @@ class WechatTemplatePusher(WechatPusher):
         self.info_template['url'] = self.info_template['url'].encode('utf-8')
 
     def data_generate(self, article):
-        remark = '\n' + article['content'][0:20] + u'\n...\n>>点击查看官网详情<<'
+        remark = u'\n>>点击查看官网详情<<'
+        if article['code'] < self.config.POLONIEX:
+            remark = u'\n>>点击查看官网详情<<'
+        else:
+            remark = '\n' + article['content'][0:20] + u'\n...\n>>点击查看官网详情<<'
         first = (u'项目平台：%s' % self.config.website[article['code']]['name'])
         self.info_template['data'] = {
             'first' : {'value': first.encode('utf-8'), 'color':'#173177'},

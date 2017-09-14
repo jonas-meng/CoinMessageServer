@@ -23,6 +23,11 @@ class Database:
         db = conn.wechat
         return db.credential
 
+    def getTwitterCredential(self):
+        conn = MongoClient(self.config.dbAddress, self.config.dbPort)
+        db = conn.twitter
+        return db.credential
+
 if __name__ == '__main__':
     config = Config()
     database = Database(config)

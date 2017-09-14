@@ -20,6 +20,7 @@ from b8w import B8Spider
 from coinvc import CoinVCSpider
 from bitfinex import BitfinexSpider
 from kraken import KrakenSpider
+from twitter import TwitterSpider
 
 import logger
 import time
@@ -57,10 +58,10 @@ class MasterSpider:
                        database=self.database),
             CoinVCSpider(config=self.config,
                         database=self.database),
-            #DahonghuoSpider(config=self.config,
-            #             database=self.database),
-            #B8Spider(config=self.config,
-            #                database=self.database),
+            DahonghuoSpider(config=self.config,
+                         database=self.database),
+            B8Spider(config=self.config,
+                            database=self.database),
         ]
 
         self.vip_spiders = [
@@ -68,6 +69,8 @@ class MasterSpider:
                            database=self.database),
             KrakenSpider(config=self.config,
                            database=self.database),
+            TwitterSpider(config=self.config,
+                          database=self.database),
         ]
 
     def run(self):

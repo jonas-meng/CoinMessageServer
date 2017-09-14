@@ -1,6 +1,5 @@
 venv
 data
 log
-twitter.py
 .idea
 *.pyc

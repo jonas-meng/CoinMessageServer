@@ -27,7 +27,8 @@ formatter = logging.Formatter('%(asctime)s %(filename)s[line:%(lineno)d] %(level
 file_handler.setFormatter(formatter)
 app.logger.addHandler(file_handler)
 
-@api.representation('application/json')
+#@api.representation('application/json')
+@api.representation('text/html')
 def output_json(data, code, headers=None):
     response = app.make_response(data)
     #json.dumps(data, ensure_ascii=False))
@@ -61,14 +62,15 @@ def getSingleArticleInJson(url):
     result = ""
     r = redis.Redis(connection_pool=pool)
     key = str(url)
-    if not r.exists(key):
+    #if not r.exists(key):
+    if True:
         articleInfoCollection = database.getNewsCollection()
         cursor = articleInfoCollection.find_one({"link":url})
         if cursor:
             result = cursor['content']
-            if not r.exists(key):
-                r.set(key, result, ex=3600)
-    res = (u'<!DOCTYPE html><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><html><body>{0}</body></html>'.format(
+            #if not r.exists(key):
+            #    r.set(key, result, ex=3600)
+    res = (u'<!DOCTYPE html><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><html><body><h3>{0}</h3></body></html>'.format(
         result.replace('\n', '<br/>')))
     return res.encode('utf-8')
 

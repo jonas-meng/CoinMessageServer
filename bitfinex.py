@@ -39,11 +39,15 @@ class BitfinexSpider(Spider):
         content = content[0]
 
         content = content.text
-        content = translate(content) + '\n' + content
+        notice = u'\n------------------------------------------------\n*以下是英文原文*\n'
+        content = (translate(content) +
+                  notice.encode('utf-8') +
+                  content.encode('utf-8'))
         return t, content
 
     def getArticleTitleAndLink(self, articleInfo):
         title = articleInfo.text.strip()
+        title = translate(title)
         link = self.config.website[self.website_code]['domain'] + articleInfo['href']
         return title, link
 

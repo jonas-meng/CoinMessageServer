@@ -60,6 +60,12 @@ class Spider:
         else:
             return t
 
+    def getBJTime(self):
+        utc_dt = datetime.datetime.utcnow()
+        td = datetime.timedelta(hours=8)
+        bj_dt = utc_dt + td
+        return bj_dt
+
     def updateDB(self, link):
         oldArticles = self.database.getNewsCollection()
 
@@ -84,7 +90,8 @@ class Spider:
                 formatedTime, content = self.getArticleContent(link)
                 if content is None or formatedTime is None:
                     continue
-                formatedTime = self.validateTime(formatedTime)
+                #formatedTime = self.validateTime(formatedTime)
+                formatedTime = self.getBJTime()
 
                 msg = self.config.website[self.website_code]['jpush_code'] + " - new article - " + link
                 self.logger.info(msg)

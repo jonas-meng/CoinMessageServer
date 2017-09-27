@@ -8,17 +8,18 @@ import logger
 import redis
 import datetime
 
-from multiprocessing import Pool
+#from multiprocessing import Pool
 from config import Config
 from database import Database
 from jpusher import JPusher
 from wechat_template_pusher import WechatTemplatePusher
 from wechat_custom_service_pusher import WechatCustomServicePusher
 from foreign_pusher import FPusher
+from simple_thread import Pool
 
 pool = redis.ConnectionPool(host='localhost', port=6379)
 
-process_pool = Pool()
+process_pool = Pool(256)
 
 class NewsPusher:
     def __init__(self, config, database):
@@ -32,15 +33,15 @@ class NewsPusher:
         self.master_secret = ''
 
         wechat_credential = database.getWechatCredential().find_one({})
-        #self.app_id = wechat_credential['app_id'].encode('utf-8')
-        self.app_id = ''
-        #self.app_secret = wechat_credential['app_secret'].encode('utf-8')
-        self.app_secret = ''
+        self.app_id = wechat_credential['app_id'].encode('utf-8')
+        #self.app_id = ''
+        self.app_secret = wechat_credential['app_secret'].encode('utf-8')
+        #self.app_secret = ''
 
         self.pusher_list = [
-            JPusher(config, self.app_key, self.master_secret),
-            WechatTemplatePusher(config, self.app_id, self.app_secret, redis.Redis(connection_pool=pool), self.config.white_list_tag),
-            WechatCustomServicePusher(config, self.app_id, self.app_secret, redis.Redis(connection_pool=pool))
+            #JPusher(config, self.app_key, self.master_secret),
+            WechatTemplatePusher(config, self.app_id, self.app_secret, redis.Redis(connection_pool=pool), self.config.vip_tag),
+            #WechatCustomServicePusher(config, self.app_id, self.app_secret, redis.Redis(connection_pool=pool))
         ]
 
         self.foreign_pusher_list = [
@@ -48,7 +49,7 @@ class NewsPusher:
         ]
 
         self.vip_pusher_list = [
-            WechatTemplatePusher(config, self.app_id, self.app_secret, redis.Redis(connection_pool=pool), self.config.test_tag),
+            WechatTemplatePusher(config, self.app_id, self.app_secret, redis.Redis(connection_pool=pool), self.config.vip_tag),
         ]
 
     def cleanRedis(self, code):
@@ -77,7 +78,7 @@ class NewsPusher:
             self.logger.info(msg)
 
             print datetime.datetime.now(), article['title'], article['link']
-            if not self.config.is_on_foreign_server:
+            if True:
                 if article['code'] < self.config.BITFINEX:
                     for pusher in self.pusher_list:
                         pusher.push(article, pool=process_pool)

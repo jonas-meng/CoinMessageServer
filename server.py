@@ -27,7 +27,6 @@ formatter = logging.Formatter('%(asctime)s %(filename)s[line:%(lineno)d] %(level
 file_handler.setFormatter(formatter)
 app.logger.addHandler(file_handler)
 
-#@api.representation('application/json')
 @api.representation('text/html')
 def output_json(data, code, headers=None):
     response = app.make_response(data)

@@ -46,8 +46,8 @@ class MasterSpider:
                         database=self.database),
             CHBTCSpider(config=self.config,
                         database=self.database),
-            BtcTradeSpider(config=self.config,
-                        database=self.database),
+            #BtcTradeSpider(config=self.config,
+            #            database=self.database),
             BTSDSpider(config=self.config,
                            database=self.database),
             YuanbaoSpider(config=self.config,
@@ -58,8 +58,8 @@ class MasterSpider:
                        database=self.database),
             CoinVCSpider(config=self.config,
                         database=self.database),
-            DahonghuoSpider(config=self.config,
-                         database=self.database),
+            #DahonghuoSpider(config=self.config,
+            #             database=self.database),
             B8Spider(config=self.config,
                             database=self.database),
         ]
@@ -75,21 +75,20 @@ class MasterSpider:
 
     def run(self):
         while True:
-            time.sleep((random.random() * 120) + 120)
             print datetime.datetime.now(), "invoke master spider"
             number_of_news = self.invokeSpider()
             if number_of_news > 0 :
                 self.logger.info(str(number_of_news) + " news discovered")
+            time.sleep((random.random() * 120) + 120)
             #break
 
     def invokeSpider(self):
         newPush = []
-        if not self.config.is_on_foreign_server:
-            for eachSpider in self.spiders:
-                newPush.extend(eachSpider.update())
-        else:
-            for eachSpider in self.vip_spiders:
-                newPush.extend(eachSpider.update())
+        for eachSpider in self.spiders:
+            #eachSpider.update()
+            newPush.extend(eachSpider.update())
+        for eachSpider in self.vip_spiders:
+            newPush.extend(eachSpider.update())
 
         if newPush:
             self.sender.send(newPush)

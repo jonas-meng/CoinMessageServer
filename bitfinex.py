@@ -47,7 +47,7 @@ class BitfinexSpider(Spider):
 
     def getArticleTitleAndLink(self, articleInfo):
         title = articleInfo.text.strip()
-        title = translate(title)
+        title = title
         link = self.config.website[self.website_code]['domain'] + articleInfo['href']
         return title, link
 

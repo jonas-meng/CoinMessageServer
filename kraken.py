@@ -40,15 +40,16 @@ class KrakenSpider(Spider):
 
         content = content.text
         notice = u'\n------------------------------------------------\n*以下是英文原文*\n'
+        res = translate(content)
+
         content = (translate(content) +
                    notice.encode('utf-8') +
                    content.encode('utf-8'))
-        print content
         return t, content
 
     def getArticleTitleAndLink(self, articleInfo):
         title = articleInfo.a.text.strip()
-        title = translate(title)
+        title = title
         link = articleInfo.a['href']
         return title, link
 

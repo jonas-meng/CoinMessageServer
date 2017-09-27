@@ -35,18 +35,18 @@ class WechatTemplatePusher(WechatPusher):
         self.info_template['url'] = self.info_template['url'].encode('utf-8')
 
     def data_generate(self, article):
-        remark = u'\n>>点击查看官网详情<<'
+        remark = u'\n>>点击查看官网详情<<\n\n点击加入右下角的知识星球，享受无延迟海外公告，更多福利等着你。'
         if article['code'] < self.config.POLONIEX:
-            remark = u'\n>>点击查看官网详情<<'
+            remark = u'\n>>点击查看官网详情<<\n\n点击加入右下角的知识星球，享受无延迟海外公告，更多福利等着你。'
         else:
-            remark = '\n' + article['content'][0:20] + u'\n...\n>>点击查看官网详情<<'
+            remark = '\n' + article['content'][0:20] + u'\n...\n>>点击查看官网详情<<\n\n点击加入右下角的知识星球，享受无延迟海外公告，更多福利等着你。'
         first = (u'项目平台：%s' % self.config.website[article['code']]['name'])
         self.info_template['data'] = {
             'first' : {'value': first.encode('utf-8'), 'color':'#173177'},
             'keyword1' : {'value': 'BIZHIDAO'},
-            'keyword2' : {'value': article['title'].encode('utf-8'), 'color':'#173177'},
+            'keyword2' : {'value': article['title'].encode('utf-8'), 'color':'#FF0000'},
             'keyword3' : {'value': article['time'].strftime("%Y-%m-%d %H:%M:%S").encode('utf-8'), 'color':'#173177'},
-            'remark' : {'value': remark.encode('utf-8'), 'color':'#173177'}
+            'remark' : {'value': remark.encode('utf-8'), 'color':'#FF0000'}
         }
         self.set_data_url(article)
 
@@ -58,7 +58,10 @@ class WechatTemplatePusher(WechatPusher):
         return (self.template_query % access_token)
 
     def get_target_user_list(self, access_token):
-        user_list = self.get_tagged_user_list(access_token, self.user_tag)
+        if self.user_tag == self.config.vip_tag:
+            user_list = self.get_all_user(access_token)
+        else:
+            user_list = self.get_tagged_user_list(access_token, self.user_tag)
         return user_list
 
 if __name__ == "__main__":

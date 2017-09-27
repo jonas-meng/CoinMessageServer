@@ -9,13 +9,15 @@ class Config:
     # wechat tag
     white_list_tag = 101
     test_tag = 100
+    foreign_info_tag = 102
+    vip_tag = 103
 
     # domestic server IP
     domestic_server_ip = "http://139.224.112.58:3389"
     domestic_pusher_url = domestic_server_ip + "/api/news"
 
     # on foreign server
-    is_on_foreign_server = False
+    is_on_foreign_server = True
 
     # log address
     master_spider_log = 'log/master_spider.log'
@@ -24,8 +26,8 @@ class Config:
     server_log = 'log/server_log'
 
     # acceptable http connection and read time
-    http_connect_time = 9
-    http_read_time = 30
+    http_connect_time = 30
+    http_read_time = 90
     http_header = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/40.0.2214.115 Safari/537.36',
                    'Accept-Language': 'zh-CN'}
 
@@ -60,6 +62,7 @@ class Config:
     BITSTAMP = 16
     POLONIEX = 17
     LIQUI = 18
+    GDAX = 19
 
     # website information
     website = [
@@ -96,8 +99,8 @@ class Config:
             "jpush_code": u"OK",
             "name": u"币行Okcoin",
             "logo": u"https://img.bafang.com/v_20170816001/okcoin/image/new_v1/logoNew.png",
-            "link": [u"https://www.okcoin.cn/service.html?currentPage=1"],
-            "domain": u"https://www.okcoin.cn",
+            "link": [u"https://www.okcoin.com/service.html?currentPage=1"],
+            "domain": u"https://www.okcoin.com",
         },
         {
             "jpush_code": u"CH",
@@ -182,6 +185,7 @@ class Config:
             "logo": u"https://www.b8wang.com/images/thanksgad_03.png",
             "link": [u'https://www.bitstamp.net/news/'],
             "domain": u'https://www.bitstamp.net/news',
+            "twitter_id": u'352518189',
         },
         {
             "jpush_code": u"POLONIEX",
@@ -198,5 +202,13 @@ class Config:
             "link": [],
             "domain": u'',
             "twitter_id": u'745560613808709632'
+        },
+        {
+            "jpush_code": u"GDAX",
+            "name": u"GDAX",
+            "logo": u"https://www.b8wang.com/images/thanksgad_03.png",
+            "link": [],
+            "domain": u'',
+            "twitter_id": u'720487892670410753'
         },
     ]

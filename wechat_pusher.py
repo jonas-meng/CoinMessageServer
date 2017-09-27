@@ -199,7 +199,8 @@ class WechatPusher:
         for openid in target_user_list:
             query = self.get_post_query(access_token)
             data = self.get_post_data(openid)
-            pool.apply_async(send_post_request, args=(query, data, openid))
+            #pool.apply_async(send_post_request, args=(query, data, openid))
+            pool.add_task({'func': send_post_request, 'args': {'query': query, 'data': data, 'openid': openid}})
 
 
 if __name__ == "__main__":

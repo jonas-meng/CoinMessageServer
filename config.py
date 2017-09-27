@@ -63,6 +63,8 @@ class Config:
     POLONIEX = 17
     LIQUI = 18
     GDAX = 19
+    BAINT = 20
+    COINCHECK = 21
 
     # website information
     website = [
@@ -210,5 +212,20 @@ class Config:
             "link": [],
             "domain": u'',
             "twitter_id": u'720487892670410753'
+        },
+        {
+            "jpush_code": u"BAINT",
+            "name": u"币安",
+            "logo": u"https://www.binance.com/resources/img/logo-cn.svg",
+            "link": [u"https://binance.zendesk.com/hc/en-us/sections/115000106672-Business-Announcement"],
+            "domain": u"https://binance.zendesk.com",
+        },
+        {
+            "jpush_code": u"COINCHECK",
+            "name": u"Coincheck",
+            "logo": u"https://www.b8wang.com/images/thanksgad_03.png",
+            "link": [],
+            "domain": u'',
+            "twitter_id": u'705356515603980289'
         },
     ]

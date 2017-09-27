@@ -21,6 +21,7 @@ from coinvc import CoinVCSpider
 from bitfinex import BitfinexSpider
 from kraken import KrakenSpider
 from twitter import TwitterSpider
+from binance_inter import BinanceInterSpider
 
 import logger
 import time
@@ -70,6 +71,8 @@ class MasterSpider:
             KrakenSpider(config=self.config,
                            database=self.database),
             TwitterSpider(config=self.config,
+                          database=self.database),
+            BinanceInterSpider(config=self.config,
                           database=self.database),
         ]
 

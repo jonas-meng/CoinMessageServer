@@ -21,6 +21,7 @@ class TwitterSpider:
             config.website[config.LIQUI]['twitter_id'].encode('utf-8') : config.LIQUI,
             config.website[config.BITSTAMP]['twitter_id'].encode('utf-8') : config.BITSTAMP,
             config.website[config.GDAX]['twitter_id'].encode('utf-8') : config.GDAX,
+            config.website[config.COINCHECK]['twitter_id'].encode('utf-8') : config.COINCHECK,
         }
         twitter_credential = database.getTwitterCredential().find_one()
         self.consumer_key = twitter_credential['consumer_key']

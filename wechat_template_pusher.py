@@ -36,10 +36,13 @@ class WechatTemplatePusher(WechatPusher):
 
     def data_generate(self, article):
         remark = u'\n>>点击查看官网详情<<\n\n点击加入右下角的知识星球，享受无延迟海外公告，更多福利等着你。'
-        if article['code'] < self.config.POLONIEX:
+        '''
+        if article['code'] < self.config.BITSTAMP:
             remark = u'\n>>点击查看官网详情<<\n\n点击加入右下角的知识星球，享受无延迟海外公告，更多福利等着你。'
         else:
-            remark = '\n' + article['content'][0:20] + u'\n...\n>>点击查看官网详情<<\n\n点击加入右下角的知识星球，享受无延迟海外公告，更多福利等着你。'
+            remark = u'\n>>点击查看官网详情<<\n\n点击加入右下角的知识星球，享受无延迟海外公告，更多福利等着你。'
+            #remark = '\n' + article['content'][0:20] + u'\n...\n>>点击查看官网详情<<\n\n点击加入右下角的知识星球，享受无延迟海外公告，更多福利等着你。'
+        '''
         first = (u'项目平台：%s' % self.config.website[article['code']]['name'])
         self.info_template['data'] = {
             'first' : {'value': first.encode('utf-8'), 'color':'#173177'},

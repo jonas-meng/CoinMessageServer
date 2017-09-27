@@ -36,6 +36,5 @@ def translate(text, src='en', dest='zh-cn'):
     return result.encode('utf-8')
 
 if __name__ == "__main__":
-    with open('./output.html','r') as f:
-        text = f.read()
-        print translate(text)
+    print translate(u"我是好人")
+    print translate(u"I am a good man")

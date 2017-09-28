@@ -31,7 +31,7 @@ class WechatTemplatePusher(WechatPusher):
                 link = article['link'].encode('utf-8')
                 self.info_template['url'] = 'https://www.coinvc.com/news/' + link.split('/')[-1]
         else:
-            self.info_template['url'] = ('http://bizhidao.org:3389/api/news?url=%s' % article['link'])
+            self.info_template['url'] = ('https://bizhidao.org/api/news?url=%s' % article['link'])
         self.info_template['url'] = self.info_template['url'].encode('utf-8')
 
     def data_generate(self, article):

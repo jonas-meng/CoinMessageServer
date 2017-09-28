@@ -36,7 +36,7 @@ class Config:
 
     # flask server host and port
     host = '0.0.0.0'
-    port = 3389
+    port = 8080
 
     # mongodb address and port
     dbAddress = '127.0.0.1'

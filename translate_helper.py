@@ -21,6 +21,7 @@ def divideText(text):
     return reversed(res)
 
 def translate(text, src='en', dest='zh-cn'):
+    text = text.encode("unicode-escape")
     text_list = []
     if len(text) < 5000:
         text_list = [text]
@@ -37,4 +38,4 @@ def translate(text, src='en', dest='zh-cn'):
 
 if __name__ == "__main__":
     print translate(u"我是好人")
-    print translate(u"I am a good man")
+    print translate(u"RT @mihar: I'm looking for a Senior Backend Engineer - GDAX https://t.co/WoXOQySVyH - RT please 🙏")

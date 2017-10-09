@@ -22,6 +22,7 @@ class TwitterSpider:
             config.website[config.BITSTAMP]['twitter_id'].encode('utf-8') : config.BITSTAMP,
             config.website[config.GDAX]['twitter_id'].encode('utf-8') : config.GDAX,
             config.website[config.COINCHECK]['twitter_id'].encode('utf-8') : config.COINCHECK,
+            config.website[config.HITBTC]['twitter_id'].encode('utf-8') : config.HITBTC,
         }
         twitter_credential = database.getTwitterCredential().find_one()
         self.consumer_key = twitter_credential['consumer_key']
@@ -71,6 +72,7 @@ class TwitterSpider:
 
                 title = u"推特状态"
                 notice = u'\n------------------------------------------------\n*以下是英文原文*\n'
+
                 content = (translate(tweet.text) +
                            notice.encode('utf-8') +
                            tweet.text.encode('utf-8'))

@@ -19,7 +19,7 @@ class BijiuSpider(Spider):
             return None
 
         soup = BeautifulSoup(html, "html.parser")
-        return soup.select("li.list-group-item")
+        return soup.select(".pull-left")
 
     def getArticleContent(self, link):
         html = self.openUrl(link)
@@ -29,7 +29,7 @@ class BijiuSpider(Spider):
         soup = BeautifulSoup(html, "html.parser")
 
         # obtain news date time
-        t = soup.select('.article-info')
+        t = soup.select('.detail')
         if not t:
             return None, None
         t[0].span.i.extract()
@@ -46,8 +46,8 @@ class BijiuSpider(Spider):
         return t, content
 
     def getArticleTitleAndLink(self, articleInfo):
-        title = articleInfo.a.text.strip()
-        link = self.config.website[self.website_code]['domain'] + articleInfo.a['href']
+        title = articleInfo.text.strip()
+        link = self.config.website[self.website_code]['domain'] + articleInfo['href']
         return title, link
 
 if __name__ == "__main__":

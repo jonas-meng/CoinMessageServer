@@ -39,8 +39,8 @@ class MasterSpider:
                         database=self.database),
             BterSpider(config=self.config,
                         database=self.database),
-            BinanceSpider(config=self.config,
-                       database=self.database),
+            #BinanceSpider(config=self.config,
+            #           database=self.database),
             HuobiSpider(config=self.config,
                         database=self.database),
             OKCoinSpider(config=self.config,
@@ -55,14 +55,14 @@ class MasterSpider:
                        database=self.database),
             #JubiSpider(config=self.config,
             #              database=self.database),
-            BijiuSpider(config=self.config,
-                       database=self.database),
+            #BijiuSpider(config=self.config,
+            #           database=self.database),
             CoinVCSpider(config=self.config,
                         database=self.database),
             #DahonghuoSpider(config=self.config,
             #             database=self.database),
-            B8Spider(config=self.config,
-                            database=self.database),
+            #B8Spider(config=self.config,
+            #                database=self.database),
         ]
 
         self.vip_spiders = [
@@ -82,8 +82,8 @@ class MasterSpider:
             number_of_news = self.invokeSpider()
             if number_of_news > 0 :
                 self.logger.info(str(number_of_news) + " news discovered")
-            time.sleep((random.random() * 120) + 120)
             #break
+            time.sleep((random.random() * 120) + 120)
 
     def invokeSpider(self):
         newPush = []

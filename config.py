@@ -65,6 +65,7 @@ class Config:
     GDAX = 19
     BAINT = 20
     COINCHECK = 21
+    HITBTC = 22
 
     # website information
     website = [
@@ -215,9 +216,10 @@ class Config:
         },
         {
             "jpush_code": u"BAINT",
-            "name": u"币安",
+            "name": u"币安国际版",
             "logo": u"https://www.binance.com/resources/img/logo-cn.svg",
-            "link": [u"https://binance.zendesk.com/hc/en-us/sections/115000106672-Business-Announcement"],
+            "link": [u"https://binance.zendesk.com/hc/en-us/sections/115000106672-New-Listings", 
+                u"https://binance.zendesk.com/hc/en-us/sections/115000202591-Latest-News"],
             "domain": u"https://binance.zendesk.com",
         },
         {
@@ -227,5 +229,13 @@ class Config:
             "link": [],
             "domain": u'',
             "twitter_id": u'705356515603980289'
+        },
+        {
+            "jpush_code": u"HITBTC",
+            "name": u"HitBTC",
+            "logo": u"https://www.b8wang.com/images/thanksgad_03.png",
+            "link": [],
+            "domain": u'',
+            "twitter_id": u'1364642054'
         },
     ]

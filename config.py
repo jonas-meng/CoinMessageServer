@@ -7,6 +7,8 @@ class Config:
     max_time_interval = 2
 
     # wechat tag
+    all_tag = -1
+    non_foreign_info_tag = -2
     white_list_tag = 101
     test_tag = 100
     foreign_info_tag = 102

@@ -31,18 +31,14 @@ class WechatTemplatePusher(WechatPusher):
                 link = article['link'].encode('utf-8')
                 self.info_template['url'] = 'https://www.coinvc.com/news/' + link.split('/')[-1]
         else:
-            self.info_template['url'] = ('https://bizhidao.org/api/news?url=%s' % article['link'])
+            if self.user_tag == self.config.foreign_info_tag:
+                self.info_template['url'] = ('https://bizhidao.org/api/news?url=%s' % article['link'])
+            else:
+                self.info_template['url'] = 'https://t.xiaomiquan.com/rFayzBE'
         self.info_template['url'] = self.info_template['url'].encode('utf-8')
 
     def data_generate(self, article):
         remark = u'\n>>点击查看官网详情<<\n\n点击加入右下角的知识星球，享受无延迟海外公告，更多福利等着你。'
-        '''
-        if article['code'] < self.config.BITSTAMP:
-            remark = u'\n>>点击查看官网详情<<\n\n点击加入右下角的知识星球，享受无延迟海外公告，更多福利等着你。'
-        else:
-            remark = u'\n>>点击查看官网详情<<\n\n点击加入右下角的知识星球，享受无延迟海外公告，更多福利等着你。'
-            #remark = '\n' + article['content'][0:20] + u'\n...\n>>点击查看官网详情<<\n\n点击加入右下角的知识星球，享受无延迟海外公告，更多福利等着你。'
-        '''
         first = (u'项目平台：%s' % self.config.website[article['code']]['name'])
         self.info_template['data'] = {
             'first' : {'value': first.encode('utf-8'), 'color':'#173177'},
@@ -61,8 +57,12 @@ class WechatTemplatePusher(WechatPusher):
         return (self.template_query % access_token)
 
     def get_target_user_list(self, access_token):
-        if self.user_tag == self.config.vip_tag:
+        if self.user_tag == self.config.all_tag:
             user_list = self.get_all_user(access_token)
+        elif self.user_tag == self.config.non_foreign_info_tag:
+            all_user_list = self.get_all_user(access_token)
+            foreign_info_user_list = self.get_tagged_user_list(access_token, self.config.foreign_info_tag)
+            user_list = all_user_list - foreign_info_user_list
         else:
             user_list = self.get_tagged_user_list(access_token, self.user_tag)
         return user_list

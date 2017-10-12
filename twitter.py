@@ -29,7 +29,6 @@ class TwitterSpider:
         self.consumer_secret = twitter_credential['consumer_secret']
 
         self.access_token = twitter_credential['access_token']
-
         self.access_token_secret = twitter_credential['access_token_secret']
 
     def getHomeLline(self, api):
@@ -73,7 +72,7 @@ class TwitterSpider:
                 title = u"推特状态"
                 notice = u'\n------------------------------------------------\n*以下是英文原文*\n'
 
-                content = (translate(tweet.text) +
+                content = (translate(tweet.text, enable_emoji=True) +
                            notice.encode('utf-8') +
                            tweet.text.encode('utf-8'))
                 articleInfo = {"code": self.twitter_ids[tweet.author.id_str],

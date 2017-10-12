@@ -20,8 +20,9 @@ def divideText(text):
         res.append(text[0:last])
     return reversed(res)
 
-def translate(text, src='en', dest='zh-cn'):
-    text = text.encode("unicode-escape")
+def translate(text, src='en', dest='zh-cn', enable_emoji=False):
+    if enable_emoji:
+        text = text.encode("unicode-escape")
     text_list = []
     if len(text) < 5000:
         text_list = [text]

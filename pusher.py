@@ -16,6 +16,7 @@ from wechat_template_pusher import WechatTemplatePusher
 from wechat_custom_service_pusher import WechatCustomServicePusher
 from foreign_pusher import FPusher
 from simple_thread import Pool
+from bitknowbot import BitKnowBot
 
 pool = redis.ConnectionPool(host='localhost', port=6379)
 
@@ -34,23 +35,22 @@ class NewsPusher:
 
         wechat_credential = database.getWechatCredential().find_one({})
         self.app_id = wechat_credential['app_id'].encode('utf-8')
-        #self.app_id = ''
         self.app_secret = wechat_credential['app_secret'].encode('utf-8')
-        #self.app_secret = ''
 
         self.pusher_list = [
             #JPusher(config, self.app_key, self.master_secret),
-            WechatTemplatePusher(config, self.app_id, self.app_secret, redis.Redis(connection_pool=pool), self.config.vip_tag),
+            #WechatTemplatePusher(config, self.app_id, self.app_secret, redis.Redis(connection_pool=pool), self.config.non_foreign_info_tag),
             #WechatCustomServicePusher(config, self.app_id, self.app_secret, redis.Redis(connection_pool=pool))
         ]
 
-        self.foreign_pusher_list = [
-            FPusher(config)
+        self.vip_pusher_list = [
+            WechatTemplatePusher(config, self.app_id, self.app_secret, redis.Redis(connection_pool=pool), self.config.foreign_info_tag),
         ]
 
-        self.vip_pusher_list = [
-            WechatTemplatePusher(config, self.app_id, self.app_secret, redis.Redis(connection_pool=pool), self.config.vip_tag),
-        ]
+    def get_telegram_pusher(self, database):
+        telegram_credential = database.getTelegramCredential().find_one({})
+        telegram_token = telegram_credential['token'].encode('utf-8')
+        return BitKnowBot(telegram_token)
 
     def cleanRedis(self, code):
         r = redis.Redis(connection_pool=pool)
@@ -78,17 +78,12 @@ class NewsPusher:
             self.logger.info(msg)
 
             print datetime.datetime.now(), article['title'], article['link']
-            if True:
-                if article['code'] < self.config.BITFINEX:
-                    for pusher in self.pusher_list:
-                        pusher.push(article, pool=process_pool)
-                else:
-                    # article pusher only for vip
-                    for pusher in self.vip_pusher_list:
-                        pusher.push(article, pool=process_pool)
-            else:
-                for pusher in self.foreign_pusher_list:
-                    pusher.push(article, pool=process_pool)
+            # vip push first
+            for pusher in self.vip_pusher_list:
+                pusher.push(article, pool=process_pool)
+
+            #for pusher in self.pusher_list:
+            #    pusher.push(article, pool=process_pool)
 
         ch.basic_ack(delivery_tag=method.delivery_tag)
 

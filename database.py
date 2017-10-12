@@ -5,27 +5,29 @@ from pymongo import MongoClient
 from config import Config
 
 class Database:
+
     def __init__(self, config):
         self.config = config
+        self.conn = MongoClient(self.config.dbAddress, self.config.dbPort)
 
     def getNewsCollection(self):
-        conn = MongoClient(self.config.dbAddress, self.config.dbPort)
-        db = conn.coin_message
+        db = self.conn.coin_message
         return db.news
 
     def getJpushCredential(self):
-        conn = MongoClient(self.config.dbAddress, self.config.dbPort)
-        db = conn.jpush
+        db = self.conn.jpush
         return db.credential
 
     def getWechatCredential(self):
-        conn = MongoClient(self.config.dbAddress, self.config.dbPort)
-        db = conn.wechat
+        db = self.conn.wechat
         return db.credential
 
     def getTwitterCredential(self):
-        conn = MongoClient(self.config.dbAddress, self.config.dbPort)
-        db = conn.twitter
+        db = self.conn.twitter
+        return db.credential
+
+    def getTelegramCredential(self):
+        db = self.conn.telegram
         return db.credential
 
 if __name__ == '__main__':

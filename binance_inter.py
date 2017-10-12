@@ -36,8 +36,6 @@ class BinanceInterSpider(Spider):
 
         content = content.text
         notice = u'\n------------------------------------------------\n*以下是英文原文*\n'
-        res = translate(content)
-
         content = (translate(content) +
                    notice.encode('utf-8') +
                    content.encode('utf-8'))

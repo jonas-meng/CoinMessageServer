@@ -14,7 +14,7 @@ class WechatTemplatePusher(WechatPusher):
     def __init__(self, config, app_id, app_secret, r, user_tag):
         WechatPusher.__init__(self, config, app_id, app_secret, r)
         self.template_query = 'https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=%s'
-        self.template_id = 'fNsetwlJIdso2gb_IC5eTGxnpqVeMnz9_WLEJYlx7k4'
+        self.template_id = 'gtZZ0985m8NU9GflX8GR-h-as24qkOMsJEODKJk9AmI'
         self.info_template = {"touser": "",
                               "template_id": self.template_id,
                               "url": "",
@@ -39,12 +39,13 @@ class WechatTemplatePusher(WechatPusher):
 
     def data_generate(self, article):
         remark = u'\n>>点击查看官网详情<<\n\n点击加入右下角的知识星球，享受无延迟海外公告，更多福利等着你。'
-        first = (u'项目平台：%s' % self.config.website[article['code']]['name'])
+        first = (u'%s' % self.config.website[article['code']]['name'])
         self.info_template['data'] = {
-            'first' : {'value': first.encode('utf-8'), 'color':'#173177'},
-            'keyword1' : {'value': 'BIZHIDAO'},
-            'keyword2' : {'value': article['title'].encode('utf-8'), 'color':'#FF0000'},
-            'keyword3' : {'value': article['time'].strftime("%Y-%m-%d %H:%M:%S").encode('utf-8'), 'color':'#173177'},
+            'first' : {'value': '', 'color':'#173177'},
+            'keyword1' : {'value': first.encode('utf-8'), 'color':'#FF0000'},
+            'keyword2' : {'value': 'BIZHIDAO'},
+            'keyword3' : {'value': article['title'].encode('utf-8'), 'color':'#FF0000'},
+            'keyword4' : {'value': article['time'].strftime("%Y-%m-%d %H:%M:%S").encode('utf-8'), 'color':'#173177'},
             'remark' : {'value': remark.encode('utf-8'), 'color':'#FF0000'}
         }
         self.set_data_url(article)

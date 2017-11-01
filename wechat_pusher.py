@@ -41,6 +41,7 @@ class WechatPusher:
                                   % (self.app_id, self.app_secret)
         self.get_user_list_query = 'https://api.weixin.qq.com/cgi-bin/user/get?access_token=%s&next_openid=%s'
         self.next_openid = ''
+        self.count = 0
         self.get_user_with_tag_query = 'https://api.weixin.qq.com/cgi-bin/user/tag/get?access_token=%s'
 
     def request_access_token(self):
@@ -111,6 +112,7 @@ class WechatPusher:
             return []
         else:
             self.next_openid = result.get('next_openid')
+            self.count = result.get('count')
             return  openid_list
 
     def request_tagged_user(self, access_token, next_openid, tag):
@@ -131,6 +133,7 @@ class WechatPusher:
             return []
         else:
             self.next_openid = result.get('next_openid')
+            self.count = result.get('count')
             return openid_list
 
     def obtain_user_list(self, access_token, next_openid):
@@ -165,7 +168,7 @@ class WechatPusher:
                 break
             tagged_user_list.update(user_list)
 
-            if user_list[-1] == self.next_openid:
+            if self.count == 0:
                 self.next_openid = ''
                 break
         return tagged_user_list
@@ -181,7 +184,7 @@ class WechatPusher:
             all_user_list.update(user_list)
 
             # stop when current user list is the last one
-            if user_list[-1] == self.next_openid:
+            if self.count == 0:
                 # reset to initial
                 self.next_openid = ''
                 break

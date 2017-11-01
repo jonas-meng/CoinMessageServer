@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding:utf-8 -*-
 
-from flask import Flask, request
+from flask import Flask, request, render_template
 from flask.ext import restful
 from flask.ext.restful import reqparse
 from config import Config
@@ -69,9 +69,10 @@ def getSingleArticleInJson(url):
             result = cursor['content']
             #if not r.exists(key):
             #    r.set(key, result, ex=3600)
-    res = (u'<!DOCTYPE html><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><html><body><h3>{0}</h3></body></html>'.format(
-        result.replace('\n', '<br/>')))
-    return res.encode('utf-8')
+    #res = (u'<!DOCTYPE html><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><html><body><h3>{0}</h3></body></html>')
+    #res = res.format(result.replace('\n', '<br/>'))
+    #return res.encode('utf-8')
+    return render_template('index.html', content=result.split('\n'))
 
 def storeArticleInDB(code, title, time, link,  content):
     code = int(code)

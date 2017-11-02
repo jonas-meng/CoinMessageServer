@@ -24,7 +24,7 @@ class WechatTemplatePusher(WechatPusher):
         self.user_tag = user_tag
 
     def set_data_url(self, article):
-        if article['code'] < self.config.BITFINEX:
+        if article['code'] < self.config.BITFINEX and article['code'] >= self.config.BIGONE:
             if article['code'] != 11:
                 self.info_template['url'] = article['link']
             else:

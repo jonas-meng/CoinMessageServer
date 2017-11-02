@@ -22,6 +22,7 @@ from bitfinex import BitfinexSpider
 from kraken import KrakenSpider
 from twitter import TwitterSpider
 from binance_inter import BinanceInterSpider
+from bigone import BigoneSpider
 
 import logger
 import time
@@ -74,6 +75,8 @@ class MasterSpider:
                           database=self.database),
             BinanceInterSpider(config=self.config,
                           database=self.database),
+            BigoneSpider(config=self.config,
+                         database=self.database),
         ]
 
     def run(self):

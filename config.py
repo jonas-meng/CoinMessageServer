@@ -68,6 +68,8 @@ class Config:
     BAINT = 20
     COINCHECK = 21
     HITBTC = 22
+    BIGONE = 23
+    HUOBIPRO = 24
 
     # website information
     website = [
@@ -239,5 +241,19 @@ class Config:
             "link": [],
             "domain": u'',
             "twitter_id": u'1364642054'
+        },
+        {
+            "jpush_code": u"BIGONE",
+            "name": u"BigOne",
+            "logo": u"https://www.b8wang.com/images/thanksgad_03.png",
+            "link": [u"https://help.big.one/hc/zh-tw/categories/115000217873-%E5%85%AC%E5%91%8A%E4%B8%AD%E5%BF%83"],
+            "domain": u'https://help.big.one',
+        },
+        {
+            "jpush_code": u"HUOBIPRO",
+            "name": u"火币全球站",
+            "logo": u"https://www.b8wang.com/images/thanksgad_03.png",
+            "link": [u"https://www.huobi.pro/zh-cn/notice/"],
+            "domain": u'https://www.huobi.pro',
         },
     ]

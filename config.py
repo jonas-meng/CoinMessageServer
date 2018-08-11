@@ -9,10 +9,9 @@ class Config:
     # wechat tag
     all_tag = -1
     non_foreign_info_tag = -2
-    white_list_tag = 101
+    white_list_tag = 102
     test_tag = 100
-    foreign_info_tag = 102
-    vip_tag = 103
+    foreign_info_tag = 103
 
     # domestic server IP
     domestic_server_ip = "http://139.224.112.58:3389"
@@ -69,7 +68,8 @@ class Config:
     COINCHECK = 21
     HITBTC = 22
     BIGONE = 23
-    HUOBIPRO = 24
+    OKEX = 24
+    GATEIO = 25
 
     # website information
     website = [
@@ -92,8 +92,9 @@ class Config:
             "jpush_code": u"BA",
             "name": u"币安",
             "logo": u"https://www.binance.com/resources/img/logo-cn.svg",
-            "link": [u"https://binance.zendesk.com/hc/zh-cn/sections/115000106672-%E4%B8%9A%E5%8A%A1%E5%85%AC%E5%91%8A"],
-            "domain": u"https://binance.zendesk.com",
+            "link": [u"https://support.binance.com/hc/zh-cn/sections/115000106672-%E6%96%B0%E5%B8%81%E4%B8%8A%E7%BA%BF",
+                     u"https://support.binance.com/hc/zh-cn/sections/115000202591-%E6%9C%80%E6%96%B0%E5%85%AC%E5%91%8A"],
+            "domain": u"https://support.binance.com",
         },
         {
             "jpush_code": u"HB",
@@ -250,10 +251,17 @@ class Config:
             "domain": u'https://help.big.one',
         },
         {
-            "jpush_code": u"HUOBIPRO",
-            "name": u"火币全球站",
+            "jpush_code": u"OKEX",
+            "name": u"OKEX",
             "logo": u"https://www.b8wang.com/images/thanksgad_03.png",
-            "link": [u"https://www.huobi.pro/zh-cn/notice/"],
-            "domain": u'https://www.huobi.pro',
+            "link": [u"https://support.okex.com/hc/zh-cn/sections/115000447632-%E5%85%AC%E5%91%8A%E4%B8%AD%E5%BF%83"],
+            "domain": u'https://support.okex.com',
+        },
+        {
+            "jpush_code": u"GATEIO",
+            "name": u"Gate.io",
+            "logo": u"https://www.b8wang.com/images/thanksgad_03.png",
+            "link": [u"https://gate.io/articlelist/ann"],
+            "domain": u'https://gate.io',
         },
     ]

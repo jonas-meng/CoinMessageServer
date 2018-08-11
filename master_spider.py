@@ -23,6 +23,8 @@ from kraken import KrakenSpider
 from twitter import TwitterSpider
 from binance_inter import BinanceInterSpider
 from bigone import BigoneSpider
+from okex import OKEXSpider
+from gateio import GateIOSpider
 
 import logger
 import time
@@ -40,8 +42,8 @@ class MasterSpider:
                         database=self.database),
             BterSpider(config=self.config,
                         database=self.database),
-            #BinanceSpider(config=self.config,
-            #           database=self.database),
+            BinanceSpider(config=self.config,
+                       database=self.database),
             HuobiSpider(config=self.config,
                         database=self.database),
             OKCoinSpider(config=self.config,
@@ -58,8 +60,8 @@ class MasterSpider:
             #              database=self.database),
             #BijiuSpider(config=self.config,
             #           database=self.database),
-            CoinVCSpider(config=self.config,
-                        database=self.database),
+            #CoinVCSpider(config=self.config,
+            #            database=self.database),
             #DahonghuoSpider(config=self.config,
             #             database=self.database),
             #B8Spider(config=self.config,
@@ -73,9 +75,13 @@ class MasterSpider:
                            database=self.database),
             TwitterSpider(config=self.config,
                           database=self.database),
-            BinanceInterSpider(config=self.config,
-                          database=self.database),
+            #BinanceInterSpider(config=self.config,
+            #              database=self.database),
             BigoneSpider(config=self.config,
+                         database=self.database),
+            OKEXSpider(config=self.config,
+                         database=self.database),
+            GateIOSpider(config=self.config,
                          database=self.database),
         ]
 
@@ -98,6 +104,7 @@ class MasterSpider:
 
         if newPush:
             self.sender.send(newPush)
+
         return len(newPush)
 
 

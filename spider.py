@@ -70,7 +70,6 @@ class Spider:
         oldArticles = self.database.getNewsCollection()
 
         response = self.getArticleInfo(link)
-        print(response)
         if response is None:
             return []
 

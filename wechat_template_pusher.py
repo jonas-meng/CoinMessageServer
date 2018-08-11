@@ -14,7 +14,7 @@ class WechatTemplatePusher(WechatPusher):
     def __init__(self, config, app_id, app_secret, r, user_tag):
         WechatPusher.__init__(self, config, app_id, app_secret, r)
         self.template_query = 'https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=%s'
-        self.template_id = 'gtZZ0985m8NU9GflX8GR-h-as24qkOMsJEODKJk9AmI'
+        self.template_id = 'y7k9UujCF4oEIpvbMIA3cwLG7zwomBREaXoj3cWKQEo'
         self.info_template = {"touser": "",
                               "template_id": self.template_id,
                               "url": "",
@@ -24,9 +24,9 @@ class WechatTemplatePusher(WechatPusher):
         self.user_tag = user_tag
 
     def set_data_url(self, article):
-        if article['code'] < self.config.BITFINEX and article['code'] >= self.config.BIGONE:
+        if article['code'] < self.config.BITFINEX or article['code'] > self.config.HITBTC:
             if article['code'] != 11:
-                self.info_template['url'] = article['link']
+                self.info_template['url'] = article['link'].encode('utf-8')
             else:
                 link = article['link'].encode('utf-8')
                 self.info_template['url'] = 'https://www.coinvc.com/news/' + link.split('/')[-1]
@@ -41,11 +41,10 @@ class WechatTemplatePusher(WechatPusher):
         remark = u'\n>>点击查看官网详情<<\n\n点击加入右下角的知识星球，享受无延迟海外公告，更多福利等着你。'
         first = (u'%s' % self.config.website[article['code']]['name'])
         self.info_template['data'] = {
-            'first' : {'value': '', 'color':'#173177'},
-            'keyword1' : {'value': first.encode('utf-8'), 'color':'#FF0000'},
-            'keyword2' : {'value': 'BIZHIDAO'},
-            'keyword3' : {'value': article['title'].encode('utf-8'), 'color':'#FF0000'},
-            'keyword4' : {'value': article['time'].strftime("%Y-%m-%d %H:%M:%S").encode('utf-8'), 'color':'#173177'},
+            #'first' : {'value': '', 'color':'#173177'},
+            'first' : {'value': first.encode('utf-8'), 'color':'#FF0000'},
+            'keyword1' : {'value': article['title'].encode('utf-8'), 'color':'#FF0000'},
+            'keyword2' : {'value': article['time'].strftime("%Y-%m-%d %H:%M:%S").encode('utf-8'), 'color':'#173177'},
             'remark' : {'value': remark.encode('utf-8'), 'color':'#FF0000'}
         }
         self.set_data_url(article)

@@ -9,9 +9,9 @@ from database import Database
 
 import datetime
 
-class BinanceSpider(Spider):
+class OKEXSpider(Spider):
     def __init__(self, config, database):
-        Spider.__init__(self, config, database, config.BINANCE)
+        Spider.__init__(self, config, database, config.OKEX)
 
     def getArticleInfo(self, link):
         html = self.openUrl(link)
@@ -42,5 +42,5 @@ if __name__ == "__main__":
     config = Config()
     sender = Sender(config)
     database = Database(config)
-    parser = BinanceSpider(config, database)
+    parser = OKEXSpider(config, database)
     parser.update()

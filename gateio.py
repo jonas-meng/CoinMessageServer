@@ -9,9 +9,9 @@ from database import Database
 
 import datetime
 
-class BinanceSpider(Spider):
+class GateIOSpider(Spider):
     def __init__(self, config, database):
-        Spider.__init__(self, config, database, config.BINANCE)
+        Spider.__init__(self, config, database, config.GATEIO)
 
     def getArticleInfo(self, link):
         html = self.openUrl(link)
@@ -19,7 +19,7 @@ class BinanceSpider(Spider):
             return None
 
         soup = BeautifulSoup(html, "html.parser")
-        return soup.select(".article-list-link")
+        return soup.select(".entry")
 
     def getArticleContent(self, link):
         html = self.openUrl(link)
@@ -28,19 +28,19 @@ class BinanceSpider(Spider):
 
         soup = BeautifulSoup(html, "html.parser")
         t = datetime.datetime.now()
-        content = soup.select(".article-content")
+        content = soup.select(".dtl-content")
         if not content:
             return None, None
         return t, str(content[0])
 
     def getArticleTitleAndLink(self, articleInfo):
-        title = articleInfo.text
-        link = self.config.website[self.website_code]['domain'] + articleInfo['href']
+        title = articleInfo.a['title']
+        link = self.config.website[self.website_code]['domain'] + articleInfo.a['href']
         return title, link
 
 if __name__ == "__main__":
     config = Config()
     sender = Sender(config)
     database = Database(config)
-    parser = BinanceSpider(config, database)
+    parser = GateIOSpider(config, database)
     parser.update()
